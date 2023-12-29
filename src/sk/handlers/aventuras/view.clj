@@ -71,7 +71,9 @@
      [:div.col.text-primary [:h4.strong {:style "font-style:italic;
                                   margin-top: 10px;
                                   text-align: justify;
-                                  text-justify: inter-word;"} (:comments crow)]]]
+                                  text-justify: inter-word;"} [:a {:href "#"
+                                                                   :data-toggle "tooltip"
+                                                                   :title (:comments crow)} (:nombre crow)]]]]
     [:div.row
      [:div.col
       [:div.card

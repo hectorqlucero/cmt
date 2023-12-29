@@ -162,14 +162,13 @@
    {:enlace "https://i.postimg.cc/502LmTHX/20231011-105427.jpg" :first 0}
    {:enlace "https://i.postimg.cc/4dyHccMt/20231011-131432.jpg" :first 0}
    {:enlace "https://i.postimg.cc/br2GChqw/20231011-131445.jpg" :first 0}
-   {:enlace "https://i.postimg.cc/br2GChqw/20231011-131445.jpg" :first 0}
-   {:enlace "https://i.postimg.cc/8kXXMpCh/20220422-154752.jpg" :first 0}])
+   {:enlace "https://i.postimg.cc/br2GChqw/20231011-131445.jpg" :first 0}])
 
 (defn slideshow-body [row]
   (list
    (if (= (:first row) 1)
-     [:div.carousel-item.active [:img.d-block.w100 {:src (:enlace row) :alt "CM"}]]
-     [:div.carousel-item [:img.d-block.w100 {:src (:enlace row) :alt "CM"}]])))
+     [:div.carousel-item.active [:img.img-fluid {:src (:enlace row) :alt "CM"}]]
+     [:div.carousel-item [:img.img-fluid {:src (:enlace row) :alt "CM"}]])))
 
 (defn build-slideshow []
   (list

@@ -17,10 +17,10 @@
         (for [row rows]
           (let [button-id (str "button_" (swap! cnt inc))]
             [:tr
-             [:td [:a.btn.btn-info {:id button-id
-                                    :href (:enlace row)
-                                    :target "_blank"
-                                    :onclick (str "setColor('" button-id "','#FF851B');")} [:span.float-right "Ver Videos"]]]
+             [:td [:a.btn.btn-secondary {:id button-id
+                                         :href (:enlace row)
+                                         :target "_blank"
+                                         :onclick (str "setColor('" button-id "','#FF851B');")} [:span.float-right "Ver Videos"]]]
              [:td (:dia row)]
              [:td (:f_fecha row)]])))]]]))
 

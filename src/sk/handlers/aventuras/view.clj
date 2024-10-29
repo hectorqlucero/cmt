@@ -12,7 +12,7 @@
 
 (defn line-rr [label value]
   [:div.row
-   [:div.col-xs-4.col-sm-4.col-md-3.col-lg-2.text-info [:strong label]]
+   [:div.col-xs-4.col-sm-4.col-md-3.col-lg-2.text-secondary [:strong label]]
    [:div.col-xs.8.col-sm-8.col-md-9.col-lg-10 value]])
 
 (defn line-cc [aventuras_id]
@@ -25,20 +25,20 @@
   (let [imagen (get-imagen row)
         the-id (row :id)]
     [:div.container.border.border-dark.rounded {:style " margin-bottom:10px;"}
-     [:h2.card-title [:img.rounded-circle {:id (str "img" (:id row))
+     [:h4.card-title [:img.rounded-circle {:id (str "img" (:id row))
                                            :style "height:65px;width:65px;margin-top:5px;margin-right:16px"
                                            :src imagen
                                            :width 95
                                            :height 71}] (:nombre row)]
      (line-rr "Fecha:" [:strong.text-warning (str (upper-case (:dia row)) (upper-case (:f_fecha row)))])
      (when (:enlace row)
-       (line-rr "Fotos:" [:a.btn.btn-info
+       (line-rr "Fotos:" [:a.btn.btn-secondary
                           {:role "button"
                            :style "margin:1px;"
                            :href (:enlace row)
                            :target "_blank"}  "Clic aqui para ver fotos!"]))
      (when (:enlacev row)
-       (line-rr "Videos:" [:a.btn.btn-info
+       (line-rr "Videos:" [:a.btn.btn-secondary
                            {:href (:enlacev row)
                             :style "margin:1px;"
                             :target "_blank"}  "Clic aqui para ver videos!"]))
@@ -61,27 +61,20 @@
                                    :rows "4"
                                    :cols "26"
                                    :size "26"}]
-          [:button.btn.btn-info {:type "button"
-                                 :id "submit_comment"
-                                 :style "margin:3px;"
-                                 :onclick (str "process_comment(" the-id ",this.form.autor.value,this.form.comment.value)")} "Enviar Comentario"]]]]]]]))
+          [:button.btn.btn-secondary {:type "button"
+                                      :id "submit_comment"
+                                      :style "margin:3px;"
+                                      :onclick (str "process_comment(" the-id ",this.form.autor.value,this.form.comment.value)")} "Enviar Comentario"]]]]]]]))
 
-(defn aventuras-view [rows crow]
-  (list
-   [:div.container
-    [:div.row
-     [:div.col.text-info
-      [:h4.strong.text-info {:style "font-style:italic;
-                                  margin-top: 10px;
-                                  text-align: justify;
-                                  text-justify: inter-word;"}
-       [:a.link-underline-light.link-underline-opacity-0.text-info {:href "#"
-                                                                    :data-toggle "tooltip"
-                                                                    :title (:comments crow)} (:nombre crow)]]]]
-    [:div.row
-     [:div.col
-      [:div.card
-       (map body-rr rows)]]]]))
+(defn aventuras-view
+  [rows crow]
+  [:div.container
+   [:div.card-header
+    [:a.link-underline-light.link-underline-opacity-0.text-secondary
+     {:href "#"
+      :data-toggle "tooltip"
+      :title (:comments crow)} [:span {:style "font-size:1.5em;"} (:nombre crow)]]]
+   (map body-rr rows)])
 
 (defn aventuras-scripts []
   [:script

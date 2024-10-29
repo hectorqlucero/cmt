@@ -1,41 +1,21 @@
 (ns sk.routes.routes
-(:require 
-[cheshire.core :refer [generate-string]]
-[compojure.core :refer [defroutes GET POST]]
-[sk.handlers.home.handler :as home]
-[sk.handlers.registrar.handler :as registrar]
-[sk.handlers.tref.handler :as table_ref]
-[sk.handlers.fotos.handler :as fotos]
-[sk.handlers.videos.handler :as videos]
-[sk.handlers.talleres.handler :as talleres]
-[sk.handlers.aventuras.handler :as aventuras]
-))
+  (:require [compojure.core :refer [defroutes GET POST]]
+            [sk.handlers.home.controller :as home-controller]
+            [sk.handlers.fotos.controller :as fotos-dashboard]
+            [sk.handlers.videos.controller :as videos-dashboard]
+            [sk.handlers.talleres.controller :as talleres-dashboard]
+            [sk.handlers.aventuras.controller :as aventuras-dashboard]))
 
 (defroutes open-routes
-(GET "/table_ref/get_users" [] (generate-string (table_ref/get-users)))
-(GET "/table_ref/validate_email/:email" [email] (generate-string (table_ref/get-users-email email)))
-(GET "/table_ref/months" [] (generate-string (table_ref/months)))
-(GET "/table_ref/years/:pyears/:nyears" [pyears nyears] (generate-string (table_ref/years pyears nyears)))
-(GET "/table_ref/get-item/:table/:field/:fname/:fval" [table field fname fval] (table_ref/get-item table field fname fval))
-(GET "/table_ref/get-time" [] (generate-string (table_ref/build-time)))
-(GET "/table_ref/levels" [] (generate-string (table_ref/level-options)))
-(GET "/table_ref/get-titulo/:id" [id] (table_ref/get-titulo id))
-(GET "/table_ref/get-titulos" [] (generate-string (table_ref/get-titulos)))
-(GET "/table_ref/get-paises" [] (generate-string (table_ref/get-pais)))
-(GET "/table_ref/get-pais/:id" [id] (table_ref/get-pais-id id))
-(GET "/" req [] (home/main req))
-(GET "/home/login" req [] (home/login req))
-(POST "/home/login" [username password] (home/login! username password))
-(GET "/home/logoff" [] (home/logoff))
-(GET "/register" req [] (registrar/registrar req))
-(POST "/register" req [] (registrar/registrar! req))
-(GET "/rpaswd" req [] (registrar/reset-password req))
-(POST "/rpaswd" req [] (registrar/reset-password! req))
-(GET "/reset_password/:token" [token] (registrar/reset-jwt token))
-(POST "/reset_password" req [] (registrar/reset-jwt! req))
-(GET "/fotos/list" req [] (fotos/fotos req))
-(GET "/videos/list" req [] (videos/videos req))
-(GET "/talleres/list" req [] (talleres/reporte req))
-(GET "/aventuras/:id" [id] (aventuras/aventuras id))
-(GET "/table_ref/get-cmt" [] (generate-string (table_ref/get-cmt)))
-)
+  (GET "/" params home-controller/main)
+  (GET "/home/login" params home-controller/login)
+  (POST "/home/login" params home-controller/login-user)
+  (GET "/home/logoff" params home-controller/logoff-user)
+  (GET "/change/password" params home-controller/change-password)
+  (POST "/change/password" req [] (home-controller/process-password req))
+
+  (GET "/fotos/list" params [] (fotos-dashboard/fotos params))
+  (GET "/videos/list" params [] (videos-dashboard/videos params))
+  (GET "/talleres/list" params [] (talleres-dashboard/reporte params))
+  (GET "/aventuras/:id" [id] (aventuras-dashboard/aventuras id))
+  (POST "/aventuras/comentarios" params [] (aventuras-dashboard/comentarios params)))

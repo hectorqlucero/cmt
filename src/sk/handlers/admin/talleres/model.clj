@@ -1,8 +1,27 @@
 (ns sk.handlers.admin.talleres.model
-(:require [sk.models.crud :refer [Query db]]))
+  (:require [sk.models.crud :refer [Query db]]
+            [clojure.string :as st]))
 
-(defn get-rows [tabla]
-(Query db [(str "select * from " tabla)]))
+(def get-talleres-sql
+  (str
+   "
+SELECT *
+FROM talleres
+ORDER BY nombre
+"))
 
-(comment
-(get-rows "talleres"))
+(defn get-talleres
+  []
+  (Query db get-talleres-sql))
+
+(def get-talleres-id-sql
+  (str
+   "
+SELECT *
+FROM talleres
+WHERE id = ?
+"))
+
+(defn get-talleres-id
+  [id]
+  (first (Query db [get-talleres-id-sql id])))

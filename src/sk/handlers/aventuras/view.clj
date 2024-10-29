@@ -12,7 +12,7 @@
 
 (defn line-rr [label value]
   [:div.row
-   [:div.col-xs-4.col-sm-4.col-md-3.col-lg-2.text-primary [:strong label]]
+   [:div.col-xs-4.col-sm-4.col-md-3.col-lg-2.text-info [:strong label]]
    [:div.col-xs.8.col-sm-8.col-md-9.col-lg-10 value]])
 
 (defn line-cc [aventuras_id]
@@ -32,15 +32,16 @@
                                            :height 71}] (:nombre row)]
      (line-rr "Fecha:" [:strong.text-warning (str (upper-case (:dia row)) (upper-case (:f_fecha row)))])
      (when (:enlace row)
-       (line-rr "Fotos:" [:a.btn.btn-secondary
-                          {:href (:enlace row)
-                           :data-options "plain:true"
-                           :target "_blank"} [:strong.text-secondary "Clic aqui para ver fotos!"]]))
+       (line-rr "Fotos:" [:a.btn.btn-info
+                          {:role "button"
+                           :style "margin:1px;"
+                           :href (:enlace row)
+                           :target "_blank"}  "Clic aqui para ver fotos!"]))
      (when (:enlacev row)
-       (line-rr "Videos:" [:a.btn.btn-secondary
+       (line-rr "Videos:" [:a.btn.btn-info
                            {:href (:enlacev row)
-                            :data-options "plain:true"
-                            :target "_blank"} [:strong.text-secondary "Clic aqui para ver videos!"]]))
+                            :style "margin:1px;"
+                            :target "_blank"}  "Clic aqui para ver videos!"]))
      (line-rr "Aventura:" (:aventura row)) [:br]
      (line-cc the-id) [:br]
      [:div
@@ -60,20 +61,23 @@
                                    :rows "4"
                                    :cols "26"
                                    :size "26"}]
-          [:button.btn.btn-secondary.btn-block {:type "button"
-                                                :id "submit_comment"
-                                                :onclick (str "process_comment(" the-id ",this.form.autor.value,this.form.comment.value)")} "Enviar Comentario"]]]]]]]))
+          [:button.btn.btn-info {:type "button"
+                                 :id "submit_comment"
+                                 :style "margin:3px;"
+                                 :onclick (str "process_comment(" the-id ",this.form.autor.value,this.form.comment.value)")} "Enviar Comentario"]]]]]]]))
 
 (defn aventuras-view [rows crow]
   (list
    [:div.container
     [:div.row
-     [:div.col.text-primary [:h4.strong {:style "font-style:italic;
+     [:div.col.text-info
+      [:h4.strong.text-info {:style "font-style:italic;
                                   margin-top: 10px;
                                   text-align: justify;
-                                  text-justify: inter-word;"} [:a {:href "#"
-                                                                   :data-toggle "tooltip"
-                                                                   :title (:comments crow)} (:nombre crow)]]]]
+                                  text-justify: inter-word;"}
+       [:a.link-underline-light.link-underline-opacity-0.text-info {:href "#"
+                                                                    :data-toggle "tooltip"
+                                                                    :title (:comments crow)} (:nombre crow)]]]]
     [:div.row
      [:div.col
       [:div.card
@@ -97,15 +101,9 @@
       .done(function(msg) {
         var json = JSON.parse(msg);
         if(json.error) {
-          $.messager.show({
-            title:'Error',
-            msg: json.error
-          });
+          alert(json.error);
         } else {
-          $.messager.show({
-            title:'Exito',
-            msg: json.success
-          });
+          alert(json.success);
         }
         $(the_autor).val('');
         $(the_comment).val('');
@@ -119,10 +117,7 @@
       });
       $('#submit_comment').prop('enabled',true);
    } else {
-    $.messager.show({
-      title:'Error',
-      msg: 'El autor o commentario no pueden estar vacios!'
-    });
+    alert('El autor o comentario no pueden estar vacios!');
    }
    }
    "])

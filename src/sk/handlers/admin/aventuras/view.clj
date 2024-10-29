@@ -1,88 +1,92 @@
 (ns sk.handlers.admin.aventuras.view
-  (:require
-   [hiccup.page :refer [include-js]]
-   [ring.util.anti-forgery :refer [anti-forgery-field]]
-   [sk.models.util :refer
-    [build-dialog build-dialog-buttons build-field build-table build-toolbar]]))
+  (:require [ring.util.anti-forgery :refer [anti-forgery-field]]
+            [sk.models.form :refer [form build-hidden-field build-field build-select build-radio build-modal-buttons build-textarea]]
+            [sk.handlers.admin.aventuras.model :refer [cmt-options]]
+            [sk.models.util :refer [user-email]]
+            [sk.models.grid :refer [build-grid build-modal modal-script]]))
 
-(defn dialog-fields [email]
+(defn aventuras-view
+  [title rows]
+  (let [labels ["EMAIL" "FECHA" "AVENTURA"]
+        db-fields [:leader_email :fecha :aventura]
+        fields (zipmap db-fields labels)
+        table-id "aventuras_table"
+        args {:new true :edit true :delete true}
+        href "/admin/aventuras"]
+    (build-grid title rows table-id fields href args)))
+
+(defn build-aventuras-fields
+  [row]
   (list
-   (build-field
-    {:id "id"
-     :name "id"
-     :type "hidden"})
-   [:select {:id "leader_email"
-             :name "leader_email"
-             :class "easyui-combobox"
-             :data-options "label:'Email',
-                            labelPosition:'top',
-                            required:true,
-                            width:'100%'"}
-    [:option {:value email} email]]
-   (build-field
-    {:id "cmt_id"
-     :name "cmt_id"
-     :class "easyui-combobox"
-     :data-options "label:'CMT:',
-                 labelPosition:'top',
-                 url:'/table_ref/get-cmt',
-                 method:'GET',
-                 required:true,
-                 width:'100%'"})
-   (build-field
-    {:id "enlace"
-     :name "enlace"
-     :class "easyui-textbox"
-     :prompt "Enlace aqui"
-     :data-options "label:'Enlace Fotos:',
-        labelPosition:'top',
-        required:false,
-        width:'100%'"})
-   (build-field
-    {:id "enlacev"
-     :name "enlacev"
-     :class "easyui-textbox"
-     :prompt "Enlace aqui"
-     :data-options "label:'Enlace Videos:',
-        labelPosition:'top',
-        required:false,
-        width:'100%'"})
-   (build-field
-    {:id "fecha"
-     :name "fecha"
-     :class "easyui-datebox"
-     :prompt "mm/dd/aaaa ex. 02/07/1957 es: Febrero 2 de 1957"
-     :data-options "label:'Fecha/Aventura:',
-        labelPosition:'top',
-        required:true,
-        width:'100%'"})
-   (build-field
-    {:id "aventura"
-     :name "aventura"
-     :class "easyui-textbox"
-     :prompt "Aqui describir la aventura"
-     :data-options "label:'Aventura:',
-        labelPosition:'top',
-        required:true,
-        multiline:true,
-        height:360,
-        width:'100%'"})))
+   (build-hidden-field {:id "id"
+                        :name "id"
+                        :value (:id row)})
+   (build-field {:label "EMAIL"
+                 :type "text"
+                 :id "leader_email"
+                 :name "leader_email"
+                 :placeholder "leader_email aqui..."
+                 :required true
+                 :value (or (:leader_email row) (user-email))})
+   (build-field {:label "FECHA"
+                 :type "date"
+                 :id "fecha"
+                 :name "fecha"
+                 :required true
+                 :value (:fecha row)})
+   (build-select {:label "CMT"
+                  :type "text"
+                  :id "cmt_id"
+                  :name "cmt_id"
+                  :placeholder "cmt_id aqui..."
+                  :required true
+                  :options (cmt-options)
+                  :value (:cmt_id row)})
+   (build-textarea {:label "ENLACE FOTOS"
+                    :id "enlace"
+                    :name "enlace"
+                    :rows "1"
+                    :placeholder "enlace aqui..."
+                    :required false
+                    :value (:enlace row)})
+   (build-textarea {:label "ENLACE VIDEOS"
+                    :id "enlacev"
+                    :name "enlacev"
+                    :rows "1"
+                    :placeholder "enlacev aqui..."
+                    :required false
+                    :value (:enlacev row)})
+   (build-textarea {:label "AVENTURA"
+                    :id "aventura"
+                    :name "aventura"
+                    :rows "8"
+                    :placeholder "aventura aqui..."
+                    :required true
+                    :value (:aventura row)})))
 
-(defn aventuras-view [title email]
+(defn build-aventuras-form
+  [title row]
+  (let [fields (build-aventuras-fields row)
+        href "/admin/aventuras/save"
+        buttons (build-modal-buttons)]
+    (form href fields buttons)))
+
+(defn build-aventuras-modal
+  [title row]
+  (build-modal title row (build-aventuras-form title row)))
+
+(defn aventuras-edit-view
+  [title row rows]
   (list
-   (anti-forgery-field)
-   (build-table
-    title
-    "/admin/aventuras"
-    (list
-     [:th {:data-options "field:'leader_email',sortable:true,width:100"} "EMAIL"]
-     [:th {:data-options "field:'enlace',sortable:true,width:100"} "FOTOS"]
-     [:th {:data-options "field:'enlacev',sortable:true,width:100"} "VIDEOS"]
-     [:th {:data-options "field:'fecha_formatted',sortable:true,width:100"} "FECHA"]
-     [:th {:data-options "field:'aventura',sortable:true,width:100"} "AVENTURA"]))
-   (build-toolbar)
-   (build-dialog title (dialog-fields email))
-   (build-dialog-buttons)))
+   (aventuras-view "aventuras Manteniento" rows)
+   (build-aventuras-modal title row)))
 
-(defn aventuras-scripts []
-  (include-js "/js/grid.js"))
+(defn aventuras-add-view
+  [title row rows]
+  (list
+   (aventuras-view "aventuras Mantenimiento" rows)
+   (build-aventuras-modal title row)))
+
+(defn aventuras-modal-script
+  []
+  (modal-script))

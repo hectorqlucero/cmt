@@ -1,8 +1,27 @@
 (ns sk.handlers.admin.videos.model
-(:require [sk.models.crud :refer [Query db]]))
+  (:require [sk.models.crud :refer [Query db]]
+            [clojure.string :as st]))
 
-(defn get-rows [tabla]
-(Query db [(str "select * from " tabla)]))
+(def get-videos-sql
+  (str
+   "
+SELECT *
+FROM videos
+ORDER BY fecha desc
+"))
 
-(comment
-(get-rows "videos"))
+(defn get-videos
+  []
+  (Query db get-videos-sql))
+
+(def get-videos-id-sql
+  (str
+   "
+SELECT *
+FROM videos
+WHERE id = ?
+"))
+
+(defn get-videos-id
+  [id]
+  (first (Query db [get-videos-id-sql id])))

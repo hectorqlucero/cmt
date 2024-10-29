@@ -1,8 +1,27 @@
 (ns sk.handlers.admin.fotos.model
-  (:require [sk.models.crud :refer [Query db]]))
+  (:require [sk.models.crud :refer [Query db]]
+            [clojure.string :as st]))
 
-(defn get-rows [tabla]
-  (Query db [(str "select * from " tabla)]))
+(def get-fotos-sql
+  (str
+   "
+SELECT *
+FROM fotos
+ORDER BY fecha desc
+"))
 
-(comment
-  (get-rows "fotos"))
+(defn get-fotos
+  []
+  (Query db get-fotos-sql))
+
+(def get-fotos-id-sql
+  (str
+   "
+SELECT *
+FROM fotos
+WHERE id = ?
+"))
+
+(defn get-fotos-id
+  [id]
+  (first (Query db [get-fotos-id-sql id])))

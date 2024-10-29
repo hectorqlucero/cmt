@@ -1,97 +1,97 @@
 (ns sk.handlers.admin.talleres.view
-  (:require
-   [hiccup.page :refer [include-js]]
-   [ring.util.anti-forgery :refer [anti-forgery-field]]
-   [sk.models.util :refer
-    [build-dialog build-dialog-buttons build-field build-table build-toolbar]]))
+  (:require [ring.util.anti-forgery :refer [anti-forgery-field]]
+            [sk.models.form :refer [form build-hidden-field build-field build-select build-radio build-modal-buttons build-textarea]]
+            [sk.models.grid :refer [build-grid build-modal modal-script]]))
 
-(defn dialog-fields []
+(defn talleres-view
+  [title rows]
+  (let [labels ["NOMBRE" "DIRECCION" "TELEFONO" "HORARIOS"]
+        db-fields [:nombre :direccion :telefono :horarios]
+        fields (zipmap db-fields labels)
+        table-id "talleres_table"
+        args {:new true :edit true :delete true}
+        href "/admin/talleres"]
+    (build-grid title rows table-id fields href args)))
+
+(defn build-talleres-fields
+  [row]
   (list
-   (build-field
-    {:id "id"
-     :name "id"
-     :type "hidden"})
-   (build-field
-    {:id "nombre"
-     :name "nombre"
-     :class "easyui-textbox"
-     :prompt "Nombre del taller..."
-     :data-options "label:'Nombre:',
-        labelPosition:'top',
-        required:true,
-        width:'100%'"})
-   (build-field
-    {:id "direccion"
-     :name "direccion"
-     :class "easyui-textbox"
-     :prompt "Domicilio del taller..."
-     :data-options "label:'Domicilio:',
-        labelPosition:'top',
-        required:true,
-        width:'100%'"})
-   (build-field
-    {:id "telefono"
-     :name "telefono"
-     :class "easyui-textbox"
-     :prompt "Telefono del taller..."
-     :data-options "label:'Telefono:',
-        labelPosition:'top',
-        required:false,
-        width:'100%'"})
-   (build-field
-    {:id "horarios"
-     :name "horarios"
-     :class "easyui-textbox"
-     :prompt "Horarios del taller..."
-     :data-options "label:'Horarios:',
-        labelPosition:'top',
-        required:false,
-        width:'100%'"})
-   (build-field
-    {:id "sitio"
-     :name "sitio"
-     :class "easyui-textbox"
-     :prompt "Sitio ej. enlace a facebook o pagina web..."
-     :data-options "label:'Enlace Sitio:',
-        labelPosition:'top',
-        required:false,
-        width:'100%'"})
-   (build-field
-    {:id "direcciones"
-     :name "direcciones"
-     :class "easyui-textbox"
-     :prompt "Enlace a google maps..."
-     :data-options "label:'Direcciones:',
-        labelPosition:'top',
-        required:false,
-        multiline:true,
-        height:120,
-        width:'100%'"})
-   (build-field
-    {:id "historia"
-     :name "historia"
-     :class "easyui-textbox"
-     :prompt "Historia o detalles del taller"
-     :data-options "label:'Historia/Detalles:',
-        labelPosition:'top',
-        required:false,
-        multiline:true,
-        height:120,
-        width:'100%'"})))
+   (build-hidden-field {:id "id"
+                        :name "id"
+                        :value (:id row)})
+   (build-field {:label "NOMBRE"
+                 :type "text"
+                 :id "nombre"
+                 :name "nombre"
+                 :placeholder "nombre aqui..."
+                 :required true
+                 :value (:nombre row)})
+   (build-field {:label "DIRECCION"
+                 :type "text"
+                 :id "direccion"
+                 :name "direccion"
+                 :placeholder "direccion aqui..."
+                 :required true
+                 :value (:direccion row)})
+   (build-field {:label "TELEFONO"
+                 :type "text"
+                 :id "telefono"
+                 :name "telefono"
+                 :placeholder "telefono aqui..."
+                 :required true
+                 :value (:telefono row)})
+   (build-textarea {:label "HORARIOS"
+                    :id "horarios"
+                    :name "horarios"
+                    :rows "3"
+                    :placeholder "horarios aqui..."
+                    :required false
+                    :value (:horarios row)})
+   (build-textarea {:label "SITIO"
+                    :id "sitio"
+                    :name "sitio"
+                    :rows "3"
+                    :placeholder "sitio aqui..."
+                    :required false
+                    :value (:sitio row)})
+   (build-textarea {:label "DIRECCIONES"
+                    :id "direcciones"
+                    :name "direcciones"
+                    :rows "3"
+                    :placeholder "direcciones aqui..."
+                    :required false
+                    :value (:direcciones row)})
+   (build-textarea {:label "HISTORIA"
+                    :id "historia"
+                    :name "historia"
+                    :rows "3"
+                    :placeholder "historia aqui..."
+                    :required false
+                    :value (:historia row)})))
 
-(defn talleres-view [title]
+(defn build-talleres-form
+  [title row]
+  (let [fields (build-talleres-fields row)
+        href "/admin/talleres/save"
+        buttons (build-modal-buttons)]
+    (form href fields buttons)))
+
+(defn build-talleres-modal
+  [title row]
+  (build-modal title row (build-talleres-form title row)))
+
+(defn talleres-edit-view
+  [title row rows]
   (list
-   (anti-forgery-field)
-   (build-table
-    title
-    "/admin/talleres"
-    (list
-     [:th {:data-options "field:'nombre',sortable:true,width:100"} "NOMBRE"]
-     [:th {:data-options "field:'direccion',sortable:true,width:100"} "DIRECCION"]
-     [:th {:data-options "field:'telefono',sortable:true,width:100"} "TELEFONO"]))
-   (build-toolbar)
-   (build-dialog title (dialog-fields))
-   (build-dialog-buttons)))
+   (talleres-view "talleres Manteniento" rows)
+   (build-talleres-modal title row)))
 
-(defn talleres-scripts []
-  (include-js "/js/grid.js"))
+(defn talleres-add-view
+  [title row rows]
+  (list
+   (talleres-view "talleres Mantenimiento" rows)
+   (build-talleres-modal title row)))
+
+(defn talleres-modal-script
+  []
+  (modal-script))

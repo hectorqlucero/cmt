@@ -1,8 +1,8 @@
 (ns sk.handlers.home.view
-  (:require [sk.models.util :refer [build-button build-field build-form]]
-            [hiccup.core :refer [html]]
-            [sk.models.crud :refer [Query db]]))
+  (:require [hiccup.core :refer [html]]
+            [sk.models.form :refer [login-form password-form]]))
 
+;; Start carousel-view
 (def rows
   [{:enlace "https://i.postimg.cc/brKZpt2L/IMG-20220403-172749.jpg" :first 1}
    {:enlace "https://i.postimg.cc/nzTMM9j5/IMG-20220418-WA0002.jpg" :first 0}
@@ -167,107 +167,38 @@
 (defn slideshow-body [row]
   (list
    (if (= (:first row) 1)
-     [:div.carousel-item.active [:img.img-fluid {:src (:enlace row) :alt "CM"}]]
-     [:div.carousel-item [:img.img-fluid {:src (:enlace row) :alt "CM"}]])))
+     [:div.carousel-item.active [:img.d-block.w-100 {:src (:enlace row) :alt "CM"}]]
+     [:div.carousel-item [:img.d-block.w-100 {:src (:enlace row) :alt "CM"}]])))
 
-(defn build-slideshow []
+(defn build-slideshow
+  []
   (list
-   [:div.carousel.slide {:id "cm"
-                         :data-ride "carousel"}
+   [:div#carouselExample.carousel.slide
     [:div.carousel-inner
-     (map slideshow-body rows)]]))
+     (map slideshow-body rows)]
+    [:button.carousel-control-prev {:type "button"
+                                    :data-bs-target "#carouselExample"
+                                    :data-bs-slide "prev"}
+     [:span.carousel-control-prev-icon {:aria-hidden "true"}]
+     [:span.visually-hidden "Previous"]]
+    [:button.carousel-control-next {:type "button"
+                                    :data-bs-target "#carouselExample"
+                                    :data-bs-slide "next"}
+     [:span.carousel-control-next-icon {:aria-hidden "true"}]
+     [:span.visually-hidden "Next"]]]))
 
-(defn contact-view []
+(defn carousel-view []
   (html
    [:div.container
     (build-slideshow)]))
+;; End carousel-view
 
-(defn contact-view1 []
-  (list
-   [:div.container {:style "margin-top:20px;"}
-    (build-slideshow)
-    [:h2 "Contáctanos"]
-    [:form
-     [:div.form-group
-      [:label {:for "Nombre"} "Nombre"]
-      [:input.form-control {:id "nombre"
-                            :name "nombre"
-                            :required "required"}]]
-     [:div.form-group
-      [:label {:for "Email"} "Email"]
-      [:input.form-control {:id "email"
-                            :name "email"
-                            :type "email"
-                            :required "true"}]]
-     [:div.form-group
-      [:label {:for "Mensaje"} "Mensaje"]
-      [:textarea.form-control {:id "mensaje"
-                               :name "mensaje"
-                               :rows 5
-                               :required "required"}]]
-     [:button.btn.btn-primary
-      [:i.fa.fa-paper-plane]
-      "Mandar Mensaje"]]]))
+(defn main-view
+  "This creates the login form and we are passing the title from the controller"
+  [title]
+  (let [href "/home/login"]
+    (login-form title href)))
 
-(defn login-view [token]
-  (build-form
-   "Conectar"
-   token
-   (list
-    (build-field
-     {:id "username"
-      :name "username"
-      :class "easyui-textbox"
-      :prompt "Email aqui..."
-      :validType "email"
-      :data-options "label:'Email:',labelPosition:'top',required:true,width:'100%'"})
-    (build-field
-     {:id "password"
-      :name "password"
-      :class "easyui-passwordbox"
-      :prompt "Contraseña aqui..."
-      :data-options "label:'Contraseña:',labelPosition:'top',required:true,width:'100%'"})
-    (build-button
-     {:href "javascript:void(0)"
-      :id "submit"
-      :text "Acceder al sitio"
-      :class "easyui-linkbutton c6"
-      :onClick "submitForm()"}))
-   (list
-    [:div {:style "margin-bottom:10px;"}
-     [:a {:href "/register"} "Clic para registrarse"]]
-    [:div {:style "margin-bottom:10px;"}
-     [:a {:href "/rpaswd"} "Clic para resetear su contraseña"]])))
-
-(defn login-script []
-  [:script
-   "
-    function submitForm() {
-        $('.fm').form('submit', {
-            onSubmit:function() {
-                if($(this).form('validate')) {
-                  $('a#submit').linkbutton('disable');
-                  $('a#submit').linkbutton({text: 'Processando!'});
-                }
-                return $(this).form('enableValidation').form('validate');
-            },
-            success: function(data) {
-                try {
-                    var dta = JSON.parse(data);
-                    if(dta.hasOwnProperty('url')) {
-                        window.location.href = dta.url;
-                    } else if(dta.hasOwnProperty('error')) {
-                        $.messager.show({
-                            title: 'Error: ',
-                            msg: dta.error
-                        });
-                        $('a#submit').linkbutton('enable');
-                        $('a#submit').linkbutton({text: 'Acceder al sitio'});
-                    }
-                } catch(e) {
-                    console.error('Invalid JSON');
-                }
-            }
-        });
-    }
-   "])
+(defn change-password-view
+  [title]
+  (password-form title))

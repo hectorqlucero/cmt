@@ -37,7 +37,7 @@
       (if (crypt/compare password (:password row))
         (do
           (session/put! :user_id (:id row))
-          (redirect "/"))
+          (error-404 "Logged in correctly!" "/"))
         (error-404 "Incorrect Username and or Password!" "/"))
       (error-404 "User is not active!" "/"))))
 

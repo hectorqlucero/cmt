@@ -32,13 +32,12 @@
                                              :height 71}] (:nombre row)]
      (line-rr "Fecha:" [:strong.text-warning (str (upper-case (:dia row)) (upper-case (:f_fecha row)))])
      (when (:enlace row)
-       (line-rr "Fotos:" [:a.btn.btn-secondary
+       (line-rr "Fotos:" [:a.text-secondary
                           {:role "button"
-                           :style "margin:1px;"
                            :href (:enlace row)
                            :target "_blank"}  "Clic aqui para ver fotos!"]))
      (when (:enlacev row)
-       (line-rr "Videos:" [:a.btn.btn-secondary
+       (line-rr "Videos:" [:a.text-secondary
                            {:href (:enlacev row)
                             :style "margin:1px;"
                             :target "_blank"}  "Clic aqui para ver videos!"]))

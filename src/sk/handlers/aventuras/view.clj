@@ -25,11 +25,11 @@
   (let [imagen (get-imagen row)
         the-id (row :id)]
     [:div.container.border.border-dark.rounded {:style " margin-bottom:10px;"}
-     [:h4.card-title [:img.rounded-circle {:id (str "img" (:id row))
-                                           :style "height:65px;width:65px;margin-top:5px;margin-right:16px"
-                                           :src imagen
-                                           :width 95
-                                           :height 71}] (:nombre row)]
+     [:div.card-header [:img.rounded-circle {:id (str "img" (:id row))
+                                             :style "height:65px;width:65px;margin-top:5px;margin-right:16px"
+                                             :src imagen
+                                             :width 95
+                                             :height 71}] (:nombre row)]
      (line-rr "Fecha:" [:strong.text-warning (str (upper-case (:dia row)) (upper-case (:f_fecha row)))])
      (when (:enlace row)
        (line-rr "Fotos:" [:a.btn.btn-secondary
@@ -42,29 +42,29 @@
                            {:href (:enlacev row)
                             :style "margin:1px;"
                             :target "_blank"}  "Clic aqui para ver videos!"]))
-     (line-rr "Aventura:" (:aventura row)) [:br]
-     (line-cc the-id) [:br]
-     [:div
-      (anti-forgery-field)
-      [:div.card
-       [:div.row
-        [:div.col
-         [:form {:style "width:55"}
-
-          [:input.form-control {:id (str "autor_" the-id)
-                                :name "autor"
-                                :placeholder "autor"
-                                :size "26"}]
-          [:textarea.form-control {:id (str "comment_" the-id)
-                                   :name "comment"
-                                   :placeholder "comentario"
-                                   :rows "4"
-                                   :cols "26"
-                                   :size "26"}]
-          [:button.btn.btn-secondary {:type "button"
-                                      :id "submit_comment"
-                                      :style "margin:3px;"
-                                      :onclick (str "process_comment(" the-id ",this.form.autor.value,this.form.comment.value)")} "Enviar Comentario"]]]]]]]))
+     (line-rr "Aventura:" (:aventura row))
+     (line-cc the-id)
+     [:br]
+     [:div.card
+      [:div.card-header
+       [:h6 "Crear un comentario"]]
+      [:div.col
+       [:form {:style "width:55"}
+        (anti-forgery-field)
+        [:input.form-control {:id (str "autor_" the-id)
+                              :name "autor"
+                              :placeholder "autor"
+                              :size "26"}]
+        [:textarea.form-control {:id (str "comment_" the-id)
+                                 :name "comment"
+                                 :placeholder "comentario"
+                                 :rows "4"
+                                 :cols "26"
+                                 :size "26"}]
+        [:button.btn.btn-secondary {:type "button"
+                                    :id "submit_comment"
+                                    :style "margin:3px;width:100%"
+                                    :onclick (str "process_comment(" the-id ",this.form.autor.value,this.form.comment.value)")} "Enviar Comentario"]]]]]))
 
 (defn aventuras-view
   [rows crow]

@@ -65,6 +65,8 @@
     cmt.nombre
     from aventuras
     join cmt on cmt.id = aventuras.cmt_id
+    where cmt.flag = '1'
+    and cmt.maximo = '0'
     order by cmt.nombre
     "))
 
@@ -79,6 +81,31 @@
   []
   (let [rows (Query db [turismo-sql])]
     (map build-turismo-link rows)))
+;; End build-turismo
+
+;; Start build-mturismo
+(def mturismo-sql
+  (str
+   "
+    select distinct aventuras.cmt_id,
+    cmt.nombre
+    from aventuras
+    join cmt on cmt.id = aventuras.cmt_id
+    where cmt.flag = '0'
+    order by cmt.nombre
+    "))
+
+(defn build-mturismo-link
+  "Builds the menu link for each menu"
+  [row]
+  (list
+   [:li [:a.dropdown-item {:href (str "/aventuras/" (:cmt_id row))} (:nombre row)]]))
+
+(defn build-mturismo
+  "Builds cicloturismo menus"
+  []
+  (let [rows (Query db [mturismo-sql])]
+    (map build-mturismo-link rows)))
 ;; End build-turismo
 
 ;; Start build-ciudad

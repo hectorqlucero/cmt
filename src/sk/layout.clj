@@ -4,6 +4,7 @@
             [sk.models.util :refer [user-level
                                     user-name
                                     build-turismo
+                                    build-mturismo
                                     build-ciudad]]
             [sk.migrations :refer [config]]))
 
@@ -46,7 +47,7 @@
                                      :id "navdrop"
                                      :data-bs-toggle "dropdown"} "Mototurismo"]
        [:ul.dropdown-menu {:aria-labelledby "navdrop"}
-        (build-turismo)]]
+        (build-mturismo)]]
       [:li.nav-item.dropdown
        [:a.nav-link.dropdown-toggle {:href "#"
                                      :id "navdrop"

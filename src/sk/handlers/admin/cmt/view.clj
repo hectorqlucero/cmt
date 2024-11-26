@@ -5,8 +5,8 @@
 
 (defn cmt-view
   [title rows]
-  (let [labels ["NOMBRE" "MAXIMO"]
-        db-fields [:nombre :maximo]
+  (let [labels ["NOMBRE" "MAXIMO" "FLAG"]
+        db-fields [:nombre :maximo :flag]
         fields (zipmap db-fields labels)
         table-id "cmt_table"
         args {:new true :edit true :delete true}
@@ -39,7 +39,16 @@
                  :name "maximo"
                  :placeholder "maximo aqui..."
                  :required true
-                 :value (:maximo row)})))
+                 :value (:maximo row)})
+   (build-field {:label "Moto=0,Ciclismo=1"
+                 :type "number"
+                 :id "flag"
+                 :name "flag"
+                 :min "0"
+                 :max "1"
+                 :placeholder "Moto pon 0, Bicicleta pon 1"
+                 :required true
+                 :value (:flag row)})))
 
 (defn build-cmt-form
   [title row]

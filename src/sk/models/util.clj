@@ -81,6 +81,30 @@
     (map build-turismo-link rows)))
 ;; End build-turismo
 
+;; Start build-ciudad
+(def rodadas-sql
+  "
+   select distinct aventuras.cmt_id,
+   cmt.nombre
+   from aventuras
+   join cmt on cmt.id = aventuras.cmt_id
+   where cmt.maximo = '30'
+   order by cmt.nombre
+   ")
+
+(defn build-rodadas-link
+  "Builds the menu link for each menu"
+  [row]
+  (list
+   [:li [:a.dropdown-item {:href (str "/aventuras/" (:cmt_id row))} (:nombre row)]]))
+
+(defn build-ciudad
+  "Builds bicycle rides on the city"
+  []
+  (let [rows (Query db [rodadas-sql])]
+    (map build-rodadas-link rows)))
+;; End build-ciudad
+
 (defn capitalize-words
   "Captitalizar todas las palabras en una hilera"
   [s]
@@ -89,5 +113,7 @@
        (join)))
 
 (comment
+  (Query db [rodadas-sql])
+  (build-ciudad)
   (build-turismo)
   (seconds->string 90061))

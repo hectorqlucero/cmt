@@ -3,7 +3,8 @@
             [hiccup.page :refer [html5 include-css include-js]]
             [sk.models.util :refer [user-level
                                     user-name
-                                    build-turismo]]
+                                    build-turismo
+                                    build-ciudad]]
             [sk.migrations :refer [config]]))
 
 (defn build-admin []
@@ -40,6 +41,18 @@
                                      :data-bs-toggle "dropdown"} "Cicloturismo"]
        [:ul.dropdown-menu {:aria-labelledby "navdrop"}
         (build-turismo)]]
+      [:li.nav-item.dropdown
+       [:a.nav-link.dropdown-toggle {:href "#"
+                                     :id "navdrop"
+                                     :data-bs-toggle "dropdown"} "Mototurismo"]
+       [:ul.dropdown-menu {:aria-labelledby "navdrop"}
+        (build-turismo)]]
+      [:li.nav-item.dropdown
+       [:a.nav-link.dropdown-toggle {:href "#"
+                                     :id "navdrop"
+                                     :data-bs-toggle "dropdown"} "Rodadas por la ciudad"]
+       [:ul.dropdown-menu {:aria-labelledby "navdrop"}
+        (build-ciudad)]]
       [:li.nav-item [:a.nav-link {:href "/fotos/list"} "Fotos"]]
       [:li.nav-item [:a.nav-link {:href "/videos/list"} "Videos"]]
       [:li.nav-item [:a.nav-link {:href "/talleres/list"} "Talleres"]]

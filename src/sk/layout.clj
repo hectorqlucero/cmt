@@ -91,6 +91,18 @@
                                      :data-bs-toggle "dropdown"} "Cicloturismo"]
        [:ul.dropdown-menu {:aria-labelledby "navdrop"}
         (build-turismo)]]
+      [:li.nav-item.dropdown
+       [:a.nav-link.dropdown-toggle {:href "#"
+                                     :id "navdrop"
+                                     :data-bs-toggle "dropdown"} "Mototurismo"]
+       [:ul.dropdown-menu {:aria-labelledby "navdrop"}
+        (build-mturismo)]]
+      [:li.nav-item.dropdown
+       [:a.nav-link.dropdown-toggle {:href "#"
+                                     :id "navdrop"
+                                     :data-bs-toggle "dropdown"} "Rodadas por la ciudad"]
+       [:ul.dropdown-menu {:aria-labelledby "navdrop"}
+        (build-ciudad)]]
       [:li.nav-item [:a.nav-link {:href "/fotos/list"} "Fotos"]]
       [:li.nav-item [:a.nav-link {:href "/videos/list"} "Videos"]]
       [:li.nav-item [:a.nav-link {:href "/talleres/list"} "Talleres"]]

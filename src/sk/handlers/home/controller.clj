@@ -3,7 +3,6 @@
             [sk.handlers.home.view :refer [carousel-view
                                            main-view
                                            change-password-view]]
-            [noir.response :refer [redirect]]
             [noir.session :as session]
             [noir.util.crypt :as crypt]
             [sk.handlers.home.model :refer [get-user

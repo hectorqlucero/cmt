@@ -8,6 +8,7 @@
 SELECT
 DATE_FORMAT(fecha, '%W ') as dia,
 DATE_FORMAT(fecha, '%e de %M %Y') as f_fecha,
+titulo,
 enlace
 FROM videos
 ORDER BY fecha desc

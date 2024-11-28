@@ -54,6 +54,7 @@
                                      :data-bs-toggle "dropdown"} "Rodadas por la ciudad"]
        [:ul.dropdown-menu {:aria-labelledby "navdrop"}
         (build-ciudad)]]
+      [:li.nav-item [:a.nav-link {:href "/aventuras/10"} "TOMBALAM"]]
       [:li.nav-item [:a.nav-link {:href "/fotos/list"} "Fotos"]]
       [:li.nav-item [:a.nav-link {:href "/videos/list"} "Videos"]]
       [:li.nav-item [:a.nav-link {:href "/talleres/list"} "Talleres"]]
@@ -103,6 +104,7 @@
                                      :data-bs-toggle "dropdown"} "Rodadas por la ciudad"]
        [:ul.dropdown-menu {:aria-labelledby "navdrop"}
         (build-ciudad)]]
+      [:li.nav-item [:a.nav-link {:href "/aventuras/10"} "TOMBALAM"]]
       [:li.nav-item [:a.nav-link {:href "/fotos/list"} "Fotos"]]
       [:li.nav-item [:a.nav-link {:href "/videos/list"} "Videos"]]
       [:li.nav-item [:a.nav-link {:href "/talleres/list"} "Talleres"]]

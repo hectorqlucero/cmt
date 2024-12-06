@@ -1,18 +1,24 @@
 (ns sk.handlers.admin.aventuras.model
   (:require [sk.models.crud :refer [Query db]]
-            [clojure.string :as st]))
+            [sk.models.util :refer [user-level user-email]]))
 
 (def get-aventuras-sql
   (str
    "
 SELECT *
 FROM aventuras
+WHERE leader_email = ?
 ORDER BY fecha desc
 "))
 
 (defn get-aventuras
   []
-  (Query db get-aventuras-sql))
+  (let [username (user-email)
+        level (user-level)
+        sql "SELECT * FROM aventuras ORDER BY fecha desc"]
+    (if (= level "S")
+      (Query db [sql])
+      (Query db [get-aventuras-sql username]))))
 
 (def get-aventuras-id-sql
   (str
@@ -43,4 +49,5 @@ WHERE id = ?
 ;; End cmt-options
 
 (comment
+  (get-aventuras)
   (cmt-options))

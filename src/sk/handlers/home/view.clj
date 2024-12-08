@@ -689,10 +689,10 @@
      [:span.carousel-control-next-icon {:aria-hidden "true"}]
      [:span.visually-hidden "Next"]]]))
 
-(defn carousel-view []
-  (html
-   [:div.container
-    (build-slideshow)]))
+(future (defn carousel-view []
+          (html
+           [:div.container
+            (build-slideshow)])))
 ;; End carousel-view
 
 (defn main-view

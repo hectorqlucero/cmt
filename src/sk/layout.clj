@@ -27,7 +27,7 @@
   (list
    [:nav.navbar.navbar-expand-lg.navbar-light.bg-light.fixed-top
     [:div.container-fluid
-     [:a.navbar-brand {:href "/"}
+     [:a.navbar-brand {:href "#"}
       [:img {:src "/images/logo.png"
              :alt (:site-name config)
              :style "width:40px;height:40px;"}]]
@@ -138,7 +138,7 @@
 (defn menus-none []
   (list
    [:nav.navbar.navbar-expand-lg.navbar-light.bg-light.fixed-top
-    [:a.navbar-brand {:href "/"}
+    [:a.navbar-brand {:href "#"}
      [:img.rounded-circle {:src "/images/logo.png"
                            :alt (:site-name config)
                            :style "width:40px;"}]]

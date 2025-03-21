@@ -1,10 +1,11 @@
 (ns sk.routes.routes
-  (:require [compojure.core :refer [defroutes GET POST]]
-            [sk.handlers.home.controller :as home-controller]
-            [sk.handlers.fotos.controller :as fotos-dashboard]
-            [sk.handlers.videos.controller :as videos-dashboard]
-            [sk.handlers.talleres.controller :as talleres-dashboard]
-            [sk.handlers.aventuras.controller :as aventuras-dashboard]))
+  (:require
+   [compojure.core :refer [defroutes GET POST]]
+   [sk.handlers.home.controller :as home-controller]
+   [sk.handlers.fotos.controller :as fotos-dashboard]
+   [sk.handlers.videos.controller :as videos-dashboard]
+   [sk.handlers.talleres.controller :as talleres-dashboard]
+   [sk.handlers.aventuras.controller :as aventuras-dashboard]))
 
 (defroutes open-routes
   (GET "/" params home-controller/main)

@@ -1,12 +1,13 @@
 (ns sk.routes.proutes
-  (:require [compojure.core :refer [defroutes GET POST]]
-            [sk.handlers.admin.users.controller :as users-controller]
-            [sk.handlers.admin.aventuras.controller :as aventuras-controller]
-            [sk.handlers.admin.cmt.controller :as cmt-controller]
-            [sk.handlers.admin.fotos.controller :as fotos-controller]
-            [sk.handlers.admin.videos.controller :as videos-controller]
-            [sk.handlers.admin.talleres.controller :as talleres-controller]
-            [sk.handlers.users.controller :as users-dashboard]))
+  (:require
+   [compojure.core :refer [defroutes GET POST]]
+   [sk.handlers.admin.users.controller :as users-controller]
+   [sk.handlers.admin.aventuras.controller :as aventuras-controller]
+   [sk.handlers.admin.cmt.controller :as cmt-controller]
+   [sk.handlers.admin.fotos.controller :as fotos-controller]
+   [sk.handlers.admin.videos.controller :as videos-controller]
+   [sk.handlers.admin.talleres.controller :as talleres-controller]
+   [sk.handlers.users.controller :as users-dashboard]))
 
 (defroutes proutes
   (GET "/admin/users" params users-controller/users)

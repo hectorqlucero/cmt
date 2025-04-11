@@ -675,7 +675,7 @@
 (defn build-slideshow
   []
   (list
-   [:div#carouselExample.carousel.slide
+   [:div#carouselExample.carousel.slide {:data-bs-ride "carousel"}
     [:div.carousel-inner
      (map slideshow-body rows)]
     [:button.carousel-control-prev {:type "button"

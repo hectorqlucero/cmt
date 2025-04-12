@@ -115,7 +115,7 @@
    cmt.nombre
    from aventuras
    join cmt on cmt.id = aventuras.cmt_id
-   where cmt.maximo = '30'
+   where cmt.maximo >= '30'
    order by cmt.nombre
    ")
 

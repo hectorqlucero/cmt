@@ -5,7 +5,7 @@
   (list
    [:div.container
     [:table.table.table-hover.table-bordered
-     [:caption {:style "caption-side:top;"} title]
+     [:h3.text-center.text-info title]
      [:thead.table-light
       [:tr
        [:th {:data-options "field:'enlace'" :style "text-align:center;"} "PROCESAR"]
@@ -18,10 +18,10 @@
         (for [row rows]
           (let [button-id (str "button_" (swap! cnt inc))]
             [:tr
-             [:td [:a.btn.btn-secondary {:id button-id
-                                         :href (:enlace row)
-                                         :target "_blank"
-                                         :onclick (str "setColor('" button-id "','#FF851B');")} [:span.float-right "Ver Videos"]]]
+             [:td [:a.btn.btn-outline-success {:id button-id
+                                               :href (:enlace row)
+                                               :target "_blank"
+                                               :onclick (str "setColor('" button-id "','#FF851B');")} [:span.float-right "Ver Videos"]]]
              [:td (:titulo row)]
              [:td (:dia row)]
              [:td (:f_fecha row)]])))]]]))

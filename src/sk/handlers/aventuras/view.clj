@@ -29,7 +29,7 @@
                                              :style "height:65px;width:65px;margin-top:5px;margin-right:16px"
                                              :src imagen
                                              :width 95
-                                             :height 71}] (:nombre row)]
+                                             :height 71}] [:span.text-info (:nombre row)]]
      (line-rr "Fecha:" [:strong.text-warning (str (upper-case (:dia row)) (upper-case (:f_fecha row)))])
      (when (:enlace row)
        (line-rr "Fotos:" [:a.text-secondary
@@ -46,7 +46,7 @@
      [:br]
      [:div.card
       [:div.card-header
-       [:h6 "Crear un comentario"]]
+       [:h6.text-success "Crear un comentario"]]
       [:div.col
        [:form {:style "width:55"}
         (anti-forgery-field)
@@ -60,16 +60,16 @@
                                  :rows "4"
                                  :cols "26"
                                  :size "26"}]
-        [:button.btn.btn-secondary {:type "button"
-                                    :id "submit_comment"
-                                    :style "margin:3px;width:100%"
-                                    :onclick (str "process_comment(" the-id ",this.form.autor.value,this.form.comment.value)")} "Enviar Comentario"]]]]]))
+        [:button.btn.btn-outline-success {:type "button"
+                                          :id "submit_comment"
+                                          :style "margin:3px;width:100%"
+                                          :onclick (str "process_comment(" the-id ",this.form.autor.value,this.form.comment.value)")} "Enviar Comentario"]]]]]))
 
 (defn aventuras-view
   [rows crow]
   [:div.container
    [:div.card-header
-    [:a.link-underline-light.link-underline-opacity-0.text-secondary
+    [:a.link-underline-light.link-underline-opacity-0.text-info
      {:href "#"
       :data-toggle "tooltip"
       :title (:comments crow)} [:span {:style "font-size:1.5em;"} (:nombre crow)]]]

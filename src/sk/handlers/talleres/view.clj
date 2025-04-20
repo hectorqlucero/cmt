@@ -11,7 +11,7 @@
   (list
    ; [:div.container.border.border-dark.rounded {:style "margin-bottom:10px;"}]
    [:div.card
-    [:h5.card-header (capitalize-words (:nombre row))]
+    [:h5.card-header.text-info (capitalize-words (:nombre row))]
     (line-rr "Sitio:"
              [:div.card-action
               (if-not (clojure.string/blank? (:sitio row))
@@ -29,6 +29,8 @@
                                   :target "_blank"} [:strong "Cómo Llegar"]]])] [:br]))
 
 (defn reporte-view [_ rows]
-  (map body-rr rows))
+  (list
+   [:h3.text-center.text-info "Talleres en Mexicali BC Mexico"]
+   (map body-rr rows)))
 
 (defn reporte-scripts [])

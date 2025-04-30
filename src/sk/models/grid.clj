@@ -25,7 +25,7 @@
      (for [row rows]
        [:tr
         (for [field fields]
-          [:td {:style "white-space:nowrap;"} ((key field) row)])
+          [:td ((key field) row)])
 
         [:td.text-center {:style "white-space:nowrap;width:128px;"}
          [:div.d-inline-flex.gap-1
@@ -42,17 +42,16 @@
   [title rows table-id fields href & args]
   [:div.table-responsive
    [:h3.text-center.text-info title]
-   [:table.table.table-sm {:style "table-layout:auto;width:100%"
-                           :id table-id
-                           :data-locale "es-MX"
-                           :data-show-fullscreen "true"
-                           :data-toggle "table"
-                           :data-show-columns "true"
-                           :data-show-toggle "true"
-                           :data-show-print "false"
-                           :data-search "true"
-                           :data-pagination "true"
-                           :data-key-events "true"}
+   [:table.table.table-sm.w-100 {:id table-id
+                                 :data-locale "es-MX"
+                                 :data-show-fullscreen "true"
+                                 :data-toggle "table"
+                                 :data-show-columns "true"
+                                 :data-show-toggle "true"
+                                 :data-show-print "false"
+                                 :data-search "true"
+                                 :data-pagination "true"
+                                 :data-key-events "true"}
     (if (seq args)
       (build-grid-head href fields (first args))
       (build-grid-head href fields))

@@ -1,6 +1,7 @@
 (ns sk.models.cdb
-  (:require [noir.util.crypt :as crypt]
-            [sk.models.crud :refer [db Insert-multi Query!]]))
+  (:require
+   [noir.util.crypt :as crypt]
+   [sk.models.crud :refer [db Insert-multi Query!]]))
 
 (def users-rows
   [{:lastname  "User"
@@ -31,7 +32,7 @@
 (defn populate-tables
   "Populates table with default data"
   [table rows]
-  (Query! db (str "LOCK TABLES " table "WRITE;"))
+  (Query! db (str "LOCK TABLES " table " WRITE;"))
   (Insert-multi db (keyword table) rows)
   (Query! db "UNLOCK TABLES;"))
 

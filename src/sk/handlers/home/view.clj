@@ -4,7 +4,8 @@
 
 ;; Start carousel-view
 (def rows
-  [{:enlace "https://i.postimg.cc/6Qbhm43X/20240303-065129.jpg" :first 1}
+  [{:enlace "images/letter.png" :first 1}
+   {:enlace "https://i.postimg.cc/6Qbhm43X/20240303-065129.png" :first 0}
    {:enlace "https://i.postimg.cc/dQb5FC9Q/20240303-065144.jpg" :first 0}
    {:enlace "https://i.postimg.cc/GtyzY3b1/20240303-065152.jpg" :first 0}
    {:enlace "https://i.postimg.cc/jSKvwr9G/20240303-114303.jpg" :first 0}
@@ -675,7 +676,9 @@
 (defn build-slideshow
   []
   (list
-   [:div#carouselExample.carousel.slide {:data-bs-ride "carousel"}
+   [:div#carouselExample.carousel.slide {:data-bs-ride "carousel"
+                                         :data-bs-interval "false"
+                                         :data-pause "hover"}
     [:div.carousel-inner
      (map slideshow-body rows)]
     [:button.carousel-control-prev {:type "button"

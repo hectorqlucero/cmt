@@ -74,7 +74,8 @@
   "Builds the menu link for each menu"
   [row]
   (list
-   [:li [:a.dropdown-item {:href (str "/aventuras/" (:cmt_id row))} (:nombre row)]]))
+   [:li [:a.dropdown-item {:href (str "/aventuras/" (:cmt_id row))
+                           :style "color: var(--color-text); padding: 0.5rem 1rem; border-radius: 4px; transition: all 0.2s ease;"} (:nombre row)]]))
 
 (defn build-turismo
   "Builds cicloturismo menus"
@@ -99,7 +100,8 @@
   "Builds the menu link for each menu"
   [row]
   (list
-   [:li [:a.dropdown-item {:href (str "/aventuras/" (:cmt_id row))} (:nombre row)]]))
+   [:li [:a.dropdown-item {:href (str "/aventuras/" (:cmt_id row))
+                           :style "color: var(--color-text); padding: 0.5rem 1rem; border-radius: 4px; transition: all 0.2s ease;"} (:nombre row)]]))
 
 (defn build-mturismo
   "Builds cicloturismo menus"
@@ -123,7 +125,8 @@
   "Builds the menu link for each menu"
   [row]
   (list
-   [:li [:a.dropdown-item {:href (str "/aventuras/" (:cmt_id row))} (:nombre row)]]))
+   [:li [:a.dropdown-item {:href (str "/aventuras/" (:cmt_id row))
+                           :style "color: var(--color-text); padding: 0.5rem 1rem; border-radius: 4px; transition: all 0.2s ease;"} (:nombre row)]]))
 
 (defn build-ciudad
   "Builds bicycle rides on the city"

@@ -25,7 +25,7 @@
 
 (defn menus-private []
   (list
-   [:nav.navbar.navbar-expand-lg.navbar-light.bg-light.fixed-top
+   [:nav.navbar.navbar-expand-lg.fixed-top {:style "background: rgba(var(--color-primary-rgb), 0.06); backdrop-filter: saturate(180%) blur(12px); border-bottom: 1px solid var(--color-border); box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.06);"}
     [:div.container-fluid
      [:a.navbar-brand {:href "#"}
       [:img {:src "/images/logo.png"
@@ -42,13 +42,13 @@
       [:ul.navbar-nav.ms-auto
        [:li.nav-item
         [:a.nav-link.active {:aria-current "page"
-                             :href "/"} "Inicio"]]
+                             :href "/"} [:i.fas.fa-home.me-2] "Inicio"]]
        [:li.nav-item.dropdown
         [:a.nav-link.dropdown-toggle {:href "#"
                                       :id "navdrop0"
                                       :role "button"
                                       :data-bs-toggle "dropdown"
-                                      :aria-expanded "false"} "Cicloturismo"]
+                                      :aria-expanded "false"} [:i.fas.fa-bicycle.me-2] "Cicloturismo"]
         [:ul.dropdown-menu {:aria-labelledby "navdrop0"}
          (build-turismo)]]
        [:li.nav-item.dropdown
@@ -56,7 +56,7 @@
                                       :id "navdrop1"
                                       :role "button"
                                       :data-bs-toggle "dropdown"
-                                      :aria-expanded "false"} "Mototurismo"]
+                                      :aria-expanded "false"} [:i.fas.fa-motorcycle.me-2] "Mototurismo"]
         [:ul.dropdown-menu {:aria-labelledby "navdrop1"}
          (build-mturismo)]]
        [:li.nav-item.dropdown
@@ -64,29 +64,24 @@
                                       :id "navdrop2"
                                       :role "button"
                                       :data-bs-toggle "dropdown"
-                                      :aria-expanded "false"} "Rodadas por la ciudad"]
+                                      :aria-expanded "false"} [:i.fas.fa-route.me-2] "Rodadas por la ciudad"]
         [:ul.dropdown-menu {:aria-labelledby "navdrop2"}
          (build-ciudad)]]
-       [:li.nav-item [:a.nav-link {:href "/aventuras/13"} "TOMBALAM"]]
-       [:li.nav-item [:a.nav-link {:href "/fotos/list"} "Fotos"]]
-       [:li.nav-item [:a.nav-link {:href "/videos/list"} "Videos"]]
-       [:li.nav-item [:a.nav-link {:href "/talleres/list"} "Talleres"]]
-       (when
-        (or
-         (= (user-level) "U")
-         (= (user-level) "A")
-         (= (user-level) "S"))
+       [:li.nav-item [:a.nav-link {:href "/fotos/list"} [:i.fas.fa-camera.me-2] "Fotos"]]
+       [:li.nav-item [:a.nav-link {:href "/videos/list"} [:i.fas.fa-video.me-2] "Videos"]]
+       [:li.nav-item [:a.nav-link {:href "/talleres/list"} [:i.fas.fa-tools.me-2] "Talleres"]]
+       (when (or (= (user-level) "U") (= (user-level) "A") (= (user-level) "S"))
          [:li.nav-item.dropdown
           [:a.nav-link.dropdown-toggle {:href "#"
                                         :id "navdrop3"
-                                        :data-bs-toggle "dropdown"} "Administrar"]
+                                        :data-bs-toggle "dropdown"} [:i.fas.fa-cog.me-2] "Administrar"]
           [:ul.dropdown-menu {:aria-labelledby "navdrop3"}
            (build-admin)]])
-       [:li.nav-item [:a.nav-link {:href "/home/logoff"} (str "Salir [" (user-name) "]")]]]]]]))
+       [:li.nav-item [:a.nav-link {:href "/home/logoff"} [:i.fas.fa-sign-out-alt.me-2] (str "Salir [" (user-name) "]")]]]]]]))
 
 (defn menus-public []
   (list
-   [:nav.navbar.navbar-expand-lg.navbar-light.bg-light.fixed-top
+   [:nav.navbar.navbar-expand-lg.fixed-top {:style "background: rgba(var(--color-primary-rgb), 0.06); backdrop-filter: saturate(180%) blur(12px); border-bottom: 1px solid var(--color-border); box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.06);"}
     [:div.container-fluid
      [:a.navbar-brand {:href "#"}
       [:img {:src "/images/logo.png"
@@ -103,13 +98,13 @@
       [:ul.navbar-nav.ms-auto
        [:li.nav-item
         [:a.nav-link.active {:aria-current "page"
-                             :href "/"} "Inicio"]]
+                             :href "/"} [:i.fas.fa-home.me-2] "Inicio"]]
        [:li.nav-item.dropdown
         [:a.nav-link.dropdown-toggle {:href "#"
                                       :id "navdrop0"
                                       :role "button"
                                       :data-bs-toggle "dropdown"
-                                      :aria-expanded "false"} "Cicloturismo"]
+                                      :aria-expanded "false"} [:i.fas.fa-bicycle.me-2] "Cicloturismo"]
         [:ul.dropdown-menu {:aria-labelledby "navdrop0"}
          (build-turismo)]]
        [:li.nav-item.dropdown
@@ -117,7 +112,7 @@
                                       :id "navdrop1"
                                       :role "button"
                                       :data-bs-toggle "dropdown"
-                                      :aria-expanded "false"} "Mototurismo"]
+                                      :aria-expanded "false"} [:i.fas.fa-motorcycle.me-2] "Mototurismo"]
         [:ul.dropdown-menu {:aria-labelledby "navdrop1"}
          (build-mturismo)]]
        [:li.nav-item.dropdown
@@ -125,19 +120,19 @@
                                       :id "navdrop2"
                                       :role "button"
                                       :data-bs-toggle "dropdown"
-                                      :aria-expanded "false"} "Rodadas por la ciudad"]
+                                      :aria-expanded "false"} [:i.fas.fa-route.me-2] "Rodadas por la ciudad"]
         [:ul.dropdown-menu {:aria-labelledby "navdrop2"}
          (build-ciudad)]]
-       [:li.nav-item [:a.nav-link {:href "/aventuras/13"} "TOMBALAM"]]
-       [:li.nav-item [:a.nav-link {:href "/fotos/list"} "Fotos"]]
-       [:li.nav-item [:a.nav-link {:href "/videos/list"} "Videos"]]
-       [:li.nav-item [:a.nav-link {:href "/talleres/list"} "Talleres"]]
+       [:li.nav-item [:a.nav-link {:href "/fotos/list"} [:i.fas.fa-camera.me-2] "Fotos"]]
+       [:li.nav-item [:a.nav-link {:href "/videos/list"} [:i.fas.fa-video.me-2] "Videos"]]
+       [:li.nav-item [:a.nav-link {:href "/talleres/list"} [:i.fas.fa-tools.me-2] "Talleres"]]
        [:li.nav-item [:a.nav-link {:href "/home/login"
-                                   :aria-current "page"} "Entrar al sitio"]]]]]]))
+                                   :aria-current "page"} [:i.fas.fa-sign-in-alt.me-2] "Entrar al sitio"]]
+       [:li.nav-item [:button#theme-toggle.btn.btn-outline-secondary {:type "button"} [:i.bi.bi-moon-fill] " Tema"]]]]]]))
 
 (defn menus-none []
   (list
-   [:nav.navbar.navbar-expand-lg.navbar-light.bg-light.fixed-top
+   [:nav.navbar.navbar-expand-lg.fixed-top {:style "background: rgba(var(--color-primary-rgb), 0.06); backdrop-filter: saturate(180%) blur(12px); border-bottom: 1px solid var(--color-border); box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.06);"}
     [:a.navbar-brand {:href "#"}
      [:img.rounded-circle {:src "/images/logo.png"
                            :alt (:site-name config)
@@ -153,6 +148,7 @@
 (defn app-css []
   (list
    (include-css "/bootstrap5/css/bootstrap.min.css")
+   (include-css "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css")
    (include-css "/bootstrap-icons/font/bootstrap-icons.css")
    (include-css "/bootstrap-table-master/dist/bootstrap-table.min.css")
    (include-css "/css/extra.css")))
@@ -191,7 +187,7 @@
            [:div {:style "padding-left:14px;"} content]]
           (app-js)
           js
-          [:footer.bg-light.text-center.fixed-bottom
+          [:footer {:style "background: var(--color-surface); border-top: 1px solid var(--color-border); padding: 6px 0; box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.04); font-size: 0.75rem; letter-spacing: .5px; color: var(--color-text-muted); text-align: center; position: fixed; bottom: 0; width: 100%;"}
            [:span  "Copyright &copy;" (t/year (t/now)) " " (:company-name config) " - All Rights Reserved"]]]))
 
 (defn error-404 [content return-url]
@@ -215,5 +211,5 @@
 
           (app-js)
           nil
-          [:footer.bg-light.text-center.fixed-bottom
+          [:footer {:style "background: var(--color-surface); border-top: 1px solid var(--color-border); padding: 6px 0; box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.04); font-size: 0.75rem; letter-spacing: .5px; color: var(--color-text-muted); text-align: center; position: fixed; bottom: 0; width: 100%;"}
            [:span  "Copyright &copy;" (t/year (t/now)) " " (:company-name config) " - All Rights Reserved"]]]))

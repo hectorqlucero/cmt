@@ -6,61 +6,78 @@
 (defn password-form
   [title]
   (list
-   [:div.container.border.w-25.bg-light
-    [:legend title]
-    [:form {:method "POST"
-            :action "/change/password"}
-     (anti-forgery-field)
-     [:div.form-group
-      [:label.fw-bold {:for "email"} "Email:"]
-      [:input.form-control {:id "email"
-                            :name "email"
-                            :type "email"
-                            :placeholder "Tu email aqui..."}]]
-     [:div.form-group
-      [:label.fw-bold {:for "password"} "Contraseña Nueva:"]
-      [:input.form-control {:id "password"
-                            :name "password"
-                            :type "password"
-                            :style "margin-bottom:5px;"
-                            :placeholder "Tu contraseña aqui..."}]]
-     [:input.btn.btn-outline-success {:type "submit"
-                                      :value "Cambiar Contraseña"}]]]))
+   [:div.container-fluid
+    [:div.row.justify-content-center
+     [:div.col-12.col-md-6.col-lg-4
+      [:div.card.shadow-sm.mb-4 {:style "border-radius: 12px; border: none; background: var(--color-bg-card);"}
+       [:div.card-header {:style "background: var(--color-bg-subtle); border-bottom: 1px solid var(--color-border); border-radius: 12px 12px 0 0;"}
+        [:h4.text-center.mb-0 {:style "color: var(--color-text);"} title]]
+       [:div.card-body
+        [:form {:method "POST"
+                :action "/change/password"
+                :style "color: var(--color-text);"}
+         (anti-forgery-field)
+         [:div.form-group.mb-3
+          [:label.fw-bold {:for "email" :style "color: var(--color-text);"} "Email:"]
+          [:input.form-control {:id "email"
+                                :name "email"
+                                :type "email"
+                                :style "background: var(--color-bg-input); color: var(--color-text); border-color: var(--color-border);"
+                                :placeholder "Tu email aqui..."}]]
+         [:div.form-group.mb-3
+          [:label.fw-bold {:for "password" :style "color: var(--color-text);"} "Contraseña Nueva:"]
+          [:input.form-control {:id "password"
+                                :name "password"
+                                :type "password"
+                                :style "background: var(--color-bg-input); color: var(--color-text); border-color: var(--color-border); margin-bottom:5px;"
+                                :placeholder "Tu contraseña aqui..."}]]
+         [:input.btn {:type "submit"
+                      :style "background: var(--color-primary); color: var(--color-text-on-primary); border-color: var(--color-primary); padding: 0.5rem 1rem; border-radius: 0.375rem; border: none; cursor: pointer;"
+                      :value "Cambiar Contraseña"}]]]]]]]))
 
 (defn login-form
   [title href]
   (list
-   [:div.container.border.w-50.bg-light
-    [:legend title]
-    [:form {:method "POST"
-            :action href}
-     (anti-forgery-field)
-     [:div.form-group
-      [:label.font-weight-bold {:for "username"} "Email:"]
-      [:input.form-control {:id "username"
-                            :name "username"
-                            :type "email"
-                            :required "true"
-                            :class "mandatory"
-                            :oninvalid "this.setCustomValidity('Email es requerido...')"
-                            :oninput "this.setCustomValidity('')"
-                            :placeholder "Email aqui..."}]]
-     [:div.form-group
-      [:label.font-weight-bold {:for "password"} "Contraseña:"]
-      [:input.form-control {:id "password"
-                            :style "margin-bottom:5px;"
-                            :name "password"
-                            :required "true"
-                            :class "mandatory"
-                            :oninvalid "this.setCustomValidity('La contraseña es requerida...')"
-                            :oninput "this.setCustomValidity('')"
-                            :placeholder "Contraseña aqui..."
-                            :type "Password"}]]
-     [:input.btn.btn-outline-success {:type "submit"
-                                      :value "Ingresar al sitio"
-                                      :style "margin-right:2px;"}]
-     [:a.btn.btn-outline-info {:role "button"
-                               :href "/change/password"} "Cambiar Contraseña"]]]))
+   [:div.container-fluid
+    [:div.row.justify-content-center
+     [:div.col-12.col-md-6.col-lg-4
+      [:div.card.shadow-sm.mb-4 {:style "border-radius: 12px; border: none; background: var(--color-bg-card);"}
+       [:div.card-header {:style "background: var(--color-bg-subtle); border-bottom: 1px solid var(--color-border); border-radius: 12px 12px 0 0;"}
+        [:h4.text-center.mb-0 {:style "color: var(--color-text);"} title]]
+       [:div.card-body
+        [:form {:method "POST"
+                :action href
+                :style "color: var(--color-text);"}
+         (anti-forgery-field)
+         [:div.form-group.mb-3
+          [:label.font-weight-bold {:for "username" :style "color: var(--color-text);"} "Email:"]
+          [:input.form-control {:id "username"
+                                :name "username"
+                                :type "email"
+                                :required "true"
+                                :class "mandatory"
+                                :style "background: var(--color-bg-input); color: var(--color-text); border-color: var(--color-border);"
+                                :oninvalid "this.setCustomValidity('Email es requerido...')"
+                                :oninput "this.setCustomValidity('')"
+                                :placeholder "Email aqui..."}]]
+         [:div.form-group.mb-3
+          [:label.font-weight-bold {:for "password" :style "color: var(--color-text);"} "Contraseña:"]
+          [:input.form-control {:id "password"
+                                :style "background: var(--color-bg-input); color: var(--color-text); border-color: var(--color-border); margin-bottom:5px;"
+                                :name "password"
+                                :required "true"
+                                :class "mandatory"
+                                :oninvalid "this.setCustomValidity('La contraseña es requerida...')"
+                                :oninput "this.setCustomValidity('')"
+                                :placeholder "Contraseña aqui..."
+                                :type "Password"}]]
+         [:div.d-flex.gap-2.mb-3
+          [:input.btn {:type "submit"
+                       :style "background: var(--color-primary); color: var(--color-text-on-primary); border-color: var(--color-primary); padding: 0.5rem 1rem; border-radius: 0.375rem; border: none; cursor: pointer; flex: 1;"
+                       :value "Ingresar al sitio"}]
+          [:a.btn {:role "button"
+                   :style "background: var(--color-secondary); color: var(--color-text-on-secondary); border-color: var(--color-secondary); padding: 0.5rem 1rem; border-radius: 0.375rem; border: none; text-decoration: none; display: inline-block; flex: 1; text-align: center;"
+                   :href "/change/password"} "Cambiar Contraseña"]]]]]]]]))
 ;; Start form
 (defn build-hidden-field
   "args:type,id,name,value"
@@ -131,24 +148,25 @@
   "args:label,type,id,name,placeholder,required,error,value"
   [args]
   (let [my-class (str "form-control" (when (= (:required args) true) " mandatory"))
-        args (assoc args :class my-class)]
+        args (assoc args :class my-class :style "background: var(--color-bg-input); color: var(--color-text); border-color: var(--color-border);")]
     (list
-     [:div.form-group
-      [:label.font-weight-bold {:for (:name args)} (:label args)]
+     [:div.form-group.mb-3
+      [:label.font-weight-bold {:for (:name args) :style "color: var(--color-text);"} (:label args)]
       [:input args]])))
 
 (defn build-textarea
   "args:label,id,name,placeholder,required,error,value"
   [args]
   (list
-   [:div.form-group
-    [:label.font-weight-bold {:for (:name args)} (:label args)]
+   [:div.form-group.mb-3
+    [:label.font-weight-bold {:for (:name args) :style "color: var(--color-text);"} (:label args)]
     [:textarea {:id (:id args)
                 :name (:name args)
                 :rows (:rows args)
                 :placeholder (:placeholder args)
                 :required (:required args)
                 :class (str "form-control" (when (= (:required args) true) " mandatory"))
+                :style "background: var(--color-bg-input); color: var(--color-text); border-color: var(--color-border);"
                 :oninvalid (str "this.setCustomValidity('" (:error args) "')")
                 :oninput "this.setCustomValidity('')"} (:value args)]]))
 
@@ -157,12 +175,13 @@
   [args]
   (let [options (:options args)]
     (list
-     [:div.form-group
-      [:label.font-weight-bold {:for (:name args)} (:label args)]
+     [:div.form-group.mb-3
+      [:label.font-weight-bold {:for (:name args) :style "color: var(--color-text);"} (:label args)]
       [:select {:id (:id args)
                 :name (:name args)
                 :required (:required args)
                 :class (str "form-control form-select" (when (= (:required args) true) " mandatory"))
+                :style "background: var(--color-bg-input); color: var(--color-text); border-color: var(--color-border);"
                 :oninvalid (str "this.setCustomValidity('" (:error args) "')")
                 :oninput "this.setCustomValidity('')"}
        (map (partial (fn [option]
@@ -218,21 +237,24 @@
         view (:view args)]
     (list
      (when-not (= view true)
-       [:input.btn.btn-outline-success {:type "submit"
-                                        :style "padding:5px;margin:5px;"
-                                        :value "Processar"}])
-     [:button.btn.btn-outline-info {:type "button"
-                                    :data-bs-dismiss "modal"} "Cancelar"])))
+       [:input.btn {:type "submit"
+                    :style "background: var(--color-primary); color: var(--color-text-on-primary); border-color: var(--color-primary); padding: 0.5rem 1rem; border-radius: 0.375rem; border: none; cursor: pointer; margin: 5px;"
+                    :value "Processar"}])
+     [:button.btn.btn-cancel {:type "button"
+                              :style "background: transparent; color: var(--color-text-muted); border: 1px solid var(--color-border); padding: 0.5rem 1rem; border-radius: 0.375rem; cursor: pointer; margin: 5px;"
+                              :data-bs-dismiss "modal"} "Cancelar"])))
 (defn form
   [href fields buttons]
   (list
-   [:div.container.border.bg-light
-    [:form {:method "POST"
-            :enctype "multipart/form-data"
-            :action href}
-     (anti-forgery-field)
-     fields
-     buttons]]))
+   [:div.card.shadow-sm {:style "border-radius: 12px; border: none; background: var(--color-bg-card);"}
+    [:div.card-body
+     [:form {:method "POST"
+             :enctype "multipart/form-data"
+             :action href
+             :style "color: var(--color-text);"}
+      (anti-forgery-field)
+      fields
+      buttons]]]))
 ;; End form
 
 (comment

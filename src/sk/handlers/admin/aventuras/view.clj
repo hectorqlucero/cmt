@@ -78,7 +78,7 @@
 (defn aventuras-edit-view
   [title row rows]
   (list
-   (aventuras-view "aventuras Manteniento" rows)
+   (aventuras-view "aventuras Mantenimiento" rows)
    (build-aventuras-modal title row)))
 
 (defn aventuras-add-view

@@ -4,8 +4,7 @@
 
 ;; Start carousel-view
 (def rows
-  [{:enlace "images/letter.png" :first 1}
-   {:enlace "https://i.postimg.cc/6Qbhm43X/20240303-065129.png" :first 0}
+  [{:enlace "https://i.postimg.cc/6Qbhm43X/20240303-065129.png" :first 1}
    {:enlace "https://i.postimg.cc/dQb5FC9Q/20240303-065144.jpg" :first 0}
    {:enlace "https://i.postimg.cc/GtyzY3b1/20240303-065152.jpg" :first 0}
    {:enlace "https://i.postimg.cc/jSKvwr9G/20240303-114303.jpg" :first 0}
@@ -670,32 +669,51 @@
 (defn slideshow-body [row]
   (list
    (if (= (:first row) 1)
-     [:div.carousel-item.active [:img.d-block.w-100 {:src (:enlace row) :alt "CM"}]]
-     [:div.carousel-item [:img.d-block.w-100 {:src (:enlace row) :alt "CM"}]])))
+     [:div.carousel-item.active {:role "listitem"}
+      [:img.d-block.w-100.kenburns {:src (:enlace row)
+                                    :alt "CM"
+                                    :loading "eager"}]]
+     [:div.carousel-item {:role "listitem"}
+      [:img.d-block.w-100 {:src (:enlace row)
+                           :alt "CM"
+                           :loading "lazy"}]])))
 
 (defn build-slideshow
   []
   (list
-   [:div#carouselExample.carousel.slide {:data-bs-ride "carousel"
-                                         :data-bs-interval "false"
-                                         :data-pause "hover"}
-    [:div.carousel-inner
-     (map slideshow-body rows)]
-    [:button.carousel-control-prev {:type "button"
-                                    :data-bs-target "#carouselExample"
-                                    :data-bs-slide "prev"}
-     [:span.carousel-control-prev-icon {:aria-hidden "true"}]
-     [:span.visually-hidden "Previous"]]
-    [:button.carousel-control-next {:type "button"
-                                    :data-bs-target "#carouselExample"
-                                    :data-bs-slide "next"}
-     [:span.carousel-control-next-icon {:aria-hidden "true"}]
-     [:span.visually-hidden "Next"]]]))
+   [:div.hero-carousel {:role "region" :aria-label "Image carousel"}
+    [:div#carouselExample.carousel.slide.carousel-fade {:data-bs-ride "carousel"
+                                                        :data-bs-interval "5000"
+                                                        :data-bs-pause "hover"
+                                                        :aria-live "polite"}
+     [:div.carousel-inner {:role "list"}
+      (map slideshow-body rows)]
+     [:div.carousel-status.visually-hidden {:aria-live "polite" :aria-atomic "true"} ""]
+     [:div.carousel-caption-overlay {:aria-label "Slide counter"}
+      [:span.slide-counter ""]]
+     [:div.carousel-progress {:aria-hidden "true"} [:span]]]
+    [:div.carousel-nav {:role "group" :aria-label "Carousel navigation"}
+     [:button.carousel-control-prev.carousel-custom-control {:type "button"
+                                                             :data-bs-target "#carouselExample"
+                                                             :data-bs-slide "prev"
+                                                             :aria-label "Previous slide"}
+      [:span.carousel-control-prev-icon {:aria-hidden "true"}]
+      [:span.visually-hidden "Previous slide"]]
+     [:button.carousel-control-next.carousel-custom-control {:type "button"
+                                                             :data-bs-target "#carouselExample"
+                                                             :data-bs-slide "next"
+                                                             :aria-label "Next slide"}
+      [:span.carousel-control-next-icon {:aria-hidden "true"}]
+      [:span.visually-hidden "Next slide"]]]]))
 
-(future (defn carousel-view []
-          (html
-           [:div.container
-            (build-slideshow)])))
+(defn carousel-view []
+  (html
+   [:div.container-fluid {:style "padding: 0;"}
+    [:div.row.justify-content-center
+     [:div.col-12
+      [:div.card.shadow-sm.mb-4 {:style "border-radius: 12px; border: none; background: var(--color-bg-card);"}
+       [:div.card-body {:style "padding: 0;"}
+        (build-slideshow)]]]]]))
 ;; End carousel-view
 
 (defn main-view

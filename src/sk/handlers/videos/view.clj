@@ -2,29 +2,32 @@
 
 (defn videos-view
   [title rows]
-  (list
-   [:div.container
-    [:table.table.table-hover.table-bordered
-     [:h3.text-center.text-info title]
-     [:thead.table-light
-      [:tr
-       [:th {:data-options "field:'enlace'" :style "text-align:center;width:140px;"} "PROCESAR"]
-       [:th {:data-options "field:'titulo'" :style "text-align:center;"} "TITULO"]
-       [:th {:data-options "field:'dia'"} "DIA"]
-       [:th {:data-options "field:'f_fecha'"} "FECHA"]]]
+  [:div.content-area
+   [:div.container-fluid {:style "max-width: 1400px;"}
+    [:div.row.mb-4
+     [:div.col-12
+      [:div.d-flex.justify-content-between.align-items-center
+       [:h2 {:style "color: var(--color-primary); margin-bottom: 0;"} title]
+       [:div {:style "background: var(--color-primary); color: white; font-size: 0.875rem; padding: 0.5rem 1rem; border-radius: 6px;"}
+        (str (count rows) " " (if (= (count rows) 1) "Video" "Videos"))]]]]
 
-     [:tbody.bg-white
-      (let [cnt (atom 0)]
-        (for [row rows]
-          (let [button-id (str "button_" (swap! cnt inc))]
-            [:tr
-             [:td {:style "text-align:center;width: 140px;"} [:a.btn.btn-outline-success {:id button-id
-                                                                                          :href (:enlace row)
-                                                                                          :target "_blank"
-                                                                                          :onclick (str "setColor('" button-id "','#FF851B');")} [:span.float-right "Ver Videos"]]]
-             [:td (:titulo row)]
-             [:td (:dia row)]
-             [:td (:f_fecha row)]])))]]]))
+    [:div.row.g-3
+     (for [row rows]
+       [:div.col-12.col-md-6.col-lg-4
+        [:div.card.h-100.shadow {:style "border-radius: 12px; overflow: hidden; border-left: 4px solid var(--color-primary); background: rgba(var(--color-primary-rgb), 0.02);"}
+         [:div.card-body.p-4
+          [:div.d-flex.justify-content-between.align-items-start.mb-3
+           [:div
+            [:h5.card-title.mb-2 {:style "color: var(--color-primary); font-weight: 600;"}
+             [:i.fas.fa-video.me-2] (:titulo row)]
+            [:p.card-text.text-muted.mb-1 {:style "font-size: 0.875rem;"} (:f_fecha row)]]
+           [:span {:style "background: var(--color-primary); color: white; font-size: 0.75rem; padding: 0.375rem 0.75rem; border-radius: 4px;"}
+            "Video"]]
+          [:div.d-grid.gap-2
+           [:a {:href (:enlace row)
+                :target "_blank"
+                :style "display: inline-flex; align-items: center; gap: 6px; background: var(--color-primary); color: white; border: 1px solid var(--color-primary); padding: 0.75rem; font-weight: 500; border-radius: 8px; text-decoration: none; transition: all 0.2s ease;"}
+            [:i.fas.fa-play-circle] " Ver Videos"]]]]])]]])
 
 (defn videos-scripts []
   [:script

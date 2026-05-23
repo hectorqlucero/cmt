@@ -1,0 +1,52 @@
+;; AUTO-GENERATED entity configuration for cmt
+;; Generated: 2026-05-22T09:37:23.149150489
+;; 
+;; This file was scaffolded from the database schema.
+;; Feel free to edit and customize as needed.
+;; 
+
+{:entity :cmt
+ :title "Grupos de Ruta"  ;; Edit this to your preference
+ :table "cmt"
+ :connection :default
+ :rights ["U" "A" "S"]  ;; User levels: U=User, A=Admin, S=System
+ :mode :parameter-driven
+ :menu-category :travel
+ :menu-order 10
+ 
+ ;; Fields auto-detected from database schema
+ :fields [
+          {:id :id :label "ID" :type :hidden}
+          {:id :nombre :label "Nombre" :type :text :placeholder "Nombre..."}
+          {:id :comments :label "Descripción" :type :textarea :placeholder "Descripción..."}
+          {:id :maximo :label "Máximo" :type :number :required? true}
+          {:id :flag :label "Activo" :type :number}]
+ 
+ ;; Auto-generated queries (customize as needed)
+ :queries {:list "SELECT * FROM cmt ORDER BY id DESC"
+           :get "SELECT * FROM cmt WHERE id = ?"}
+ 
+ ;; Available actions
+ :actions {:new true :edit true :delete true}
+ 
+ ;; Enable audit trail (tracks who created/modified and when)
+ ;; Uncomment to enable:
+ ;; :audit? true
+ 
+ ;; Lifecycle hooks for business logic
+ ;; Senior developer: Implement these in src/cmt/hooks/cmt.clj
+ ;; Uncomment and implement as needed:
+ ;; :hooks {:before-load :cmt.hooks.cmt/before-load
+ ;;         :after-load :cmt.hooks.cmt/after-load
+ ;;         :before-save :cmt.hooks.cmt/before-save
+ ;;         :after-save :cmt.hooks.cmt/after-save
+ ;;         :before-delete :cmt.hooks.cmt/before-delete
+ ;;         :after-delete :cmt.hooks.cmt/after-delete}
+ 
+ ;; Subgrids for related tables (auto-detected)
+ :subgrids [
+            {:entity :aventuras
+             :title "Aventuras"
+             :foreign-key :cmt_id
+             :icon "bi bi-map"
+             :label "Aventuras"}]}

@@ -1,0 +1,59 @@
+;; AUTO-GENERATED entity configuration for aventuras_link
+;; Generated: 2026-05-22T09:41:31.256188389
+;; 
+;; This file was scaffolded from the database schema.
+;; Feel free to edit and customize as needed.
+;; 
+
+{:entity :aventuras_link
+ :title "Enlaces de Aventura"  ;; Edit this to your preference
+ :table "aventuras_link"
+ :connection :default
+ :rights ["U" "A" "S"]  ;; User levels: U=User, A=Admin, S=System
+ :mode :parameter-driven
+ :menu-hidden? true
+ 
+ ;; Fields auto-detected from database schema
+ :fields [
+          {:id :id :label "ID" :type :hidden}
+          {:id :aventuras_id
+           :label "Aventura"
+           :type :fk
+           :fk :aventuras
+           :fk-field [:id :fecha]
+           :fk-sort [:id]
+           :fk-separator " - "}
+          {:id :comments :label "Comentario" :type :textarea :placeholder "Comentario..."}
+          {:id :nombre :label "Título" :type :text :placeholder "Título..."}
+          {:id :commenter_email :label "Email comentarista" :type :email :placeholder "autor@example.com"}
+          {:id :approved :label "Aprobado" :type :boolean}]
+ 
+ ;; Auto-generated queries (customize as needed)
+ :queries {:list "SELECT ave.id AS id, ave.aventuras_id, ave.comments, ave.nombre, ave.commenter_email, ave.approved, ave1.aventura AS aventura_nombre FROM aventuras_link ave LEFT JOIN aventuras ave1 ON ave.aventuras_id = ave1.id ORDER BY ave.id DESC"
+           :get "SELECT * FROM aventuras_link WHERE id = ?"}
+ 
+ ;; Available actions
+ :actions {:new true :edit true :delete true}
+ 
+ ;; Enable audit trail (tracks who created/modified and when)
+ ;; Uncomment to enable:
+ ;; :audit? true
+ 
+ ;; Lifecycle hooks for business logic
+ ;; Senior developer: Implement these in src/cmt/hooks/aventuras_link.clj
+ ;; Uncomment and implement as needed:
+ ;; :hooks {:before-load :cmt.hooks.aventuras_link/before-load
+ ;;         :after-load :cmt.hooks.aventuras_link/after-load
+ ;;         :before-save :cmt.hooks.aventuras_link/before-save
+ ;;         :after-save :cmt.hooks.aventuras_link/after-save
+ ;;         :before-delete :cmt.hooks.aventuras_link/before-delete
+ ;;         :after-delete :cmt.hooks.aventuras_link/after-delete}
+ 
+ ;; Subgrids (parent-child relationships)
+ ;; Uncomment if this entity has child records:
+ ;; :subgrids [{:entity :related-table
+ ;;             :title "Related Records"
+ ;;             :foreign-key :parent_id
+ ;;             :icon "bi bi-list"
+ ;;             :label "Related Records"}]
+}

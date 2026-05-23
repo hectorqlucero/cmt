@@ -1,0 +1,6 @@
+CREATE TABLE IF NOT EXISTS videos (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  fecha TEXT,
+  titulo TEXT,
+  enlace TEXT
+);

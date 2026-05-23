@@ -1,0 +1,54 @@
+;; AUTO-GENERATED entity configuration for talleres
+;; Generated: 2026-05-22T09:40:21.006031298
+;; 
+;; This file was scaffolded from the database schema.
+;; Feel free to edit and customize as needed.
+;; 
+
+{:entity :talleres
+ :title "Talleres"  ;; Edit this to your preference
+ :table "talleres"
+ :connection :default
+ :rights ["U" "A" "S"]  ;; User levels: U=User, A=Admin, S=System
+ :mode :parameter-driven
+ 
+ ;; Fields auto-detected from database schema
+ :fields [
+          {:id :id :label "ID" :type :hidden}
+          {:id :nombre :label "Nombre" :type :text :placeholder "Nombre..."}
+          {:id :direccion :label "Direccion" :type :text :placeholder "Direccion..."}
+          {:id :telefono :label "Telefono" :type :text :placeholder "Telefono..."}
+          {:id :horarios :label "Horarios" :type :textarea :placeholder "Horarios..."}
+          {:id :sitio :label "Sitio" :type :textarea :placeholder "Sitio..."}
+          {:id :direcciones :label "Direcciones" :type :textarea :placeholder "Direcciones..."}
+          {:id :historia :label "Historia" :type :textarea :placeholder "Historia..."}]
+ 
+ ;; Auto-generated queries (customize as needed)
+ :queries {:list "SELECT * FROM talleres ORDER BY id DESC"
+           :get "SELECT * FROM talleres WHERE id = ?"}
+ 
+ ;; Available actions
+ :actions {:new true :edit true :delete true}
+ 
+ ;; Enable audit trail (tracks who created/modified and when)
+ ;; Uncomment to enable:
+ ;; :audit? true
+ 
+ ;; Lifecycle hooks for business logic
+ ;; Senior developer: Implement these in src/cmt/hooks/talleres.clj
+ ;; Uncomment and implement as needed:
+ ;; :hooks {:before-load :cmt.hooks.talleres/before-load
+ ;;         :after-load :cmt.hooks.talleres/after-load
+ ;;         :before-save :cmt.hooks.talleres/before-save
+ ;;         :after-save :cmt.hooks.talleres/after-save
+ ;;         :before-delete :cmt.hooks.talleres/before-delete
+ ;;         :after-delete :cmt.hooks.talleres/after-delete}
+ 
+ ;; Subgrids (parent-child relationships)
+ ;; Uncomment if this entity has child records:
+ ;; :subgrids [{:entity :related-table
+ ;;             :title "Related Records"
+ ;;             :foreign-key :parent_id
+ ;;             :icon "bi bi-list"
+ ;;             :label "Related Records"}]
+}

@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="256" height="256" viewBox="0 0 256 256" fill="none">
+  <defs>
+    <linearGradient id="bg" x1="24" y1="18" x2="230" y2="238" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#174B69"/>
+      <stop offset="1" stop-color="#1F7F8A"/>
+    </linearGradient>
+    <linearGradient id="sun" x1="168" y1="44" x2="196" y2="84" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FFF4B0"/>
+      <stop offset="1" stop-color="#FFD672"/>
+    </linearGradient>
+    <linearGradient id="sand" x1="42" y1="188" x2="160" y2="244" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#F3C665"/>
+      <stop offset="1" stop-color="#DB9B37"/>
+    </linearGradient>
+  </defs>
+
+  <rect x="10" y="10" width="236" height="236" rx="52" fill="url(#bg)"/>
+  <rect x="10" y="10" width="236" height="236" rx="52" stroke="#D8EEF0" stroke-width="2"/>
+
+  <rect x="28" y="32" width="76" height="32" rx="16" fill="#F4FBFC"/>
+  <text x="66" y="53" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="19" font-weight="700" fill="#103C5C">CMT</text>
+
+  <circle cx="186" cy="72" r="22" fill="url(#sun)"/>
+  <circle cx="186" cy="72" r="34" fill="#FFE9A0" fill-opacity="0.14"/>
+
+  <path d="M28 142L82 96L132 132L184 94L246 138V178H28V142Z" fill="#1C4D70"/>
+  <path d="M28 166L86 132L152 154L214 126L246 146V194H28V166Z" fill="#2D6B7B"/>
+  <path d="M28 182C59 176 91 175 121 179C149 183 180 186 208 181C222 178 235 175 246 176V212H28V182Z" fill="#3E8785"/>
+
+  <path d="M28 232C44 206 72 192 102 193C129 194 148 209 168 217C190 225 215 223 246 206V246H28V232Z" fill="#FFF7E9"/>
+  <path d="M28 236C44 213 75 198 104 199C127 200 142 211 160 219C183 229 212 227 246 210V246H28V236Z" fill="url(#sand)"/>
+
+  <g stroke="#102A3B" stroke-width="10" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="100" cy="166" r="22"/>
+    <circle cx="162" cy="166" r="22"/>
+    <path d="M100 166L126 142H146L162 166"/>
+    <path d="M126 142L116 126H138L146 142"/>
+    <path d="M136 126H155"/>
+    <path d="M144 142L154 126"/>
+  </g>
+</svg>

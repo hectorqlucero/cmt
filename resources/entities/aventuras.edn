@@ -1,0 +1,59 @@
+;; AUTO-GENERATED entity configuration for aventuras
+;; Generated: 2026-05-22T09:35:36.059376556
+;; 
+;; This file was scaffolded from the database schema.
+;; Feel free to edit and customize as needed.
+;; 
+
+{:entity :aventuras
+ :title "Aventuras"  ;; Edit this to your preference
+ :table "aventuras"
+ :connection :default
+ :rights ["U" "A" "S"]  ;; User levels: U=User, A=Admin, S=System
+ :mode :parameter-driven
+ :menu-category :travel
+ :menu-order 20
+
+ ;; Fields auto-detected from database schema
+ :fields [{:id :id :label "ID" :type :hidden}
+          {:id :aventura :label "Historia" :type :textarea :placeholder "Describe la aventura..."}
+          {:id :fecha :label "Fecha" :type :date}
+          {:id :leader_email :label "Email del líder" :type :email :placeholder "user@example.com"}
+          {:id :enlace :label "Enlace" :type :textarea :placeholder "Enlace..."}
+          {:id :enlacev :label "Enlace video" :type :textarea :placeholder "Enlace video..."}
+          {:id :cmt_id
+           :label "Grupo / CMT"
+           :type :fk
+           :fk :cmt
+           :fk-field [:nombre]
+           :fk-sort [:nombre]
+           :fk-separator " - "}]
+
+ ;; Auto-generated queries (customize as needed)
+ :queries {:list "SELECT ave.id AS id, ave.aventura, ave.fecha, ave.leader_email, ave.enlace, ave.enlacev, ave.cmt_id, cmt.nombre AS cmt_nombre FROM aventuras ave LEFT JOIN cmt cmt ON ave.cmt_id = cmt.id ORDER BY ave.id DESC"
+           :get "SELECT * FROM aventuras WHERE id = ?"}
+
+ ;; Available actions
+ :actions {:new true :edit true :delete true}
+
+ ;; Enable audit trail (tracks who created/modified and when)
+ ;; Uncomment to enable:
+ ;; :audit? true
+
+ ;; Lifecycle hooks for business logic
+ ;; Senior developer: Implement these in src/cmt/hooks/aventuras.clj
+ ;; Uncomment and implement as needed:
+ ;; :hooks {:before-load :cmt.hooks.aventuras/before-load
+ ;;         :after-load :cmt.hooks.aventuras/after-load
+ ;;         :before-save :cmt.hooks.aventuras/before-save
+ ;;         :after-save :cmt.hooks.aventuras/after-save
+ ;;         :before-delete :cmt.hooks.aventuras/before-delete
+ ;;         :after-delete :cmt.hooks.aventuras/after-delete}
+
+ ;; Subgrids for related tables (auto-detected)
+ :subgrids [{:entity :aventuras_link
+             :title "Enlaces"
+             :foreign-key :aventuras_id
+             :icon "bi bi-link-45deg"
+             :label "Enlaces"}]
+ }

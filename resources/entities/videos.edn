@@ -1,0 +1,50 @@
+;; AUTO-GENERATED entity configuration for videos
+;; Generated: 2026-05-22T09:39:41.027039198
+;; 
+;; This file was scaffolded from the database schema.
+;; Feel free to edit and customize as needed.
+;; 
+
+{:entity :videos
+ :title "Videos"  ;; Edit this to your preference
+ :table "videos"
+ :connection :default
+ :rights ["U" "A" "S"]  ;; User levels: U=User, A=Admin, S=System
+ :mode :parameter-driven
+ 
+ ;; Fields auto-detected from database schema
+ :fields [
+          {:id :id :label "ID" :type :hidden}
+          {:id :fecha :label "Fecha" :type :date}
+          {:id :titulo :label "Titulo" :type :text :placeholder "Titulo..."}
+          {:id :enlace :label "Enlace" :type :textarea :placeholder "Enlace..."}]
+ 
+ ;; Auto-generated queries (customize as needed)
+ :queries {:list "SELECT * FROM videos ORDER BY id DESC"
+           :get "SELECT * FROM videos WHERE id = ?"}
+ 
+ ;; Available actions
+ :actions {:new true :edit true :delete true}
+ 
+ ;; Enable audit trail (tracks who created/modified and when)
+ ;; Uncomment to enable:
+ ;; :audit? true
+ 
+ ;; Lifecycle hooks for business logic
+ ;; Senior developer: Implement these in src/cmt/hooks/videos.clj
+ ;; Uncomment and implement as needed:
+ ;; :hooks {:before-load :cmt.hooks.videos/before-load
+ ;;         :after-load :cmt.hooks.videos/after-load
+ ;;         :before-save :cmt.hooks.videos/before-save
+ ;;         :after-save :cmt.hooks.videos/after-save
+ ;;         :before-delete :cmt.hooks.videos/before-delete
+ ;;         :after-delete :cmt.hooks.videos/after-delete}
+ 
+ ;; Subgrids (parent-child relationships)
+ ;; Uncomment if this entity has child records:
+ ;; :subgrids [{:entity :related-table
+ ;;             :title "Related Records"
+ ;;             :foreign-key :parent_id
+ ;;             :icon "bi bi-list"
+ ;;             :label "Related Records"}]
+}

@@ -1,0 +1,48 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" role="img" aria-label="Cinematic road trip cover with dramatic lights">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#0b1329"/>
+      <stop offset="45%" stop-color="#1c315f"/>
+      <stop offset="100%" stop-color="#2e5e7f"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="50%" cy="35%" r="55%">
+      <stop offset="0%" stop-color="#ffd8a0" stop-opacity="0.95"/>
+      <stop offset="100%" stop-color="#ffd8a0" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="road" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#f0b14a"/>
+      <stop offset="100%" stop-color="#ff7d42"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1600" height="900" fill="url(#bg)"/>
+  <circle cx="830" cy="260" r="300" fill="url(#glow)"/>
+
+  <path d="M0 640 L260 510 L510 620 L760 460 L1020 620 L1270 490 L1600 640 L1600 900 L0 900 Z" fill="#142949" opacity="0.88"/>
+  <path d="M0 730 C330 650 580 760 860 690 C1090 635 1320 725 1600 660 L1600 900 L0 900 Z" fill="#183856"/>
+
+  <path d="M270 900 C520 730 700 710 940 900 Z" fill="url(#road)"/>
+  <path d="M585 900 C665 835 738 812 822 900 Z" fill="#fff0c8" opacity="0.9"/>
+
+  <g opacity="0.24" fill="#d8f3ff">
+    <circle cx="210" cy="160" r="1.8"/>
+    <circle cx="280" cy="130" r="1.6"/>
+    <circle cx="370" cy="180" r="1.5"/>
+    <circle cx="520" cy="150" r="1.7"/>
+    <circle cx="640" cy="220" r="1.4"/>
+    <circle cx="750" cy="140" r="1.9"/>
+    <circle cx="870" cy="190" r="1.5"/>
+    <circle cx="980" cy="130" r="1.7"/>
+    <circle cx="1090" cy="210" r="1.4"/>
+    <circle cx="1220" cy="160" r="1.8"/>
+    <circle cx="1330" cy="200" r="1.6"/>
+  </g>
+
+  <g transform="translate(780 700)">
+    <circle cx="-52" cy="74" r="36" fill="#0a1321"/>
+    <circle cx="78" cy="74" r="36" fill="#0a1321"/>
+    <path d="M-35 36 L32 18 L95 42 L82 60 L18 56 L-30 72 Z" fill="#0a1321"/>
+    <path d="M0 14 L16 -12 L54 8 L34 30 Z" fill="#0a1321"/>
+    <rect x="72" y="45" width="40" height="8" rx="4" fill="#ffcf88" opacity="0.8"/>
+  </g>
+</svg>

@@ -1,0 +1,2 @@
+DROP INDEX idx_aventuras_link_aventuras_approved ON aventuras_link;
+DROP INDEX idx_aventuras_link_approved ON aventuras_link;

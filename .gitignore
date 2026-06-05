@@ -2,7 +2,7 @@
 /classes
 /uploads
 /checkouts
-config.clj
+resources/private/app-config.edn
 profiles.clj
 pom.xml
 pom.xml.asc
@@ -14,5 +14,8 @@ pom.xml.asc
 *.lsp/*
 /.lein-*
 /.nrepl-port
+/.prepl-port
 .hgignore
 .hg/
+.calva/
+.clj-kondo/

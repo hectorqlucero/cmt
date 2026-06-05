@@ -123,9 +123,10 @@
                active-tab (get-in request [:params :active_tab])
                row (when (and parent-id subgrid-fk)
                      {subgrid-fk parent-id})
-               return-url (when parent-entity-str
-                             (str "/admin/" parent-entity-str
-                                  (when parent-id (str "/" parent-id))))
+               return-url (or (get-in request [:params :return_url])
+                              (when parent-entity-str
+                                (str "/admin/" parent-entity-str
+                                     (when parent-id (str "/" parent-id)))))
                content (render/render-form request entity row subgrid-fk return-url active-tab)]
           (application request title ok nil content))
         (catch Exception e

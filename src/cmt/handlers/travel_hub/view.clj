@@ -31,9 +31,7 @@
       {:href (str "/admin/cmt?id=" id)}
       (i18n/tr request :travel-hub/open-group-board)]
      [:a.btn.btn-sm.btn-primary
-      {:href (str "/admin/aventuras/add-form/" id "?parent_entity=cmt")
-       :class "travelhub-modal-add"
-       :data-modal-title (i18n/tr request :travel-hub/new-adventure)}
+       {:href (str "/admin/aventuras/add-form/" id "?parent_entity=cmt&return_url=/admin/travel-hub")}
       (i18n/tr request :travel-hub/new-adventure)]]]])
 
 (defn- adventure-item [request {:keys [id fecha aventura cmt_nombre cmt_id enlaces_count]}]
@@ -59,9 +57,7 @@
       {:href (str "/admin/aventuras?id=" id)}
       (i18n/tr request :travel-hub/open-adventure)]
      [:a.btn.btn-sm.btn-primary
-      {:href (str "/admin/aventuras_link/add-form/" id "?parent_entity=aventuras")
-       :class "travelhub-modal-add"
-       :data-modal-title (i18n/tr request :travel-hub/new-link)}
+       {:href (str "/admin/aventuras_link/add-form/" id "?parent_entity=aventuras&return_url=/admin/travel-hub")}
       (i18n/tr request :travel-hub/new-link)]]]])
 
 (defn hub-view [request {:keys [groups adventures]}]
@@ -90,32 +86,4 @@
        (if (seq adventures)
           [:div.list-group (map (partial adventure-item request) adventures)]
                [:p.text-muted.mb-0 (i18n/tr request :travel-hub/no-adventures)])]]]]
-
-             [:script
-              "(function(){\n"
-              "  if (window.__travelHubModalBound) return;\n"
-              "  window.__travelHubModalBound = true;\n"
-              "  document.addEventListener('click', function(e){\n"
-              "    var link = e.target.closest('a.travelhub-modal-add');\n"
-              "    if (!link) return;\n"
-              "    e.preventDefault();\n"
-              "    var modalEl = document.getElementById('exampleModal');\n"
-              "    if (!modalEl) return;\n"
-              "    var modalBody = modalEl.querySelector('.modal-body');\n"
-              "    var modalTitle = document.getElementById('exampleModalLabel');\n"
-              "    if (modalTitle) modalTitle.textContent = link.getAttribute('data-modal-title') || 'Nuevo';\n"
-              "    if (modalBody) modalBody.innerHTML = '<div class=\"p-4 text-center text-muted\">Cargando...</div>';\n"
-              "    fetch(link.href, {credentials: 'same-origin'})\n"
-              "      .then(function(r){ return r.text(); })\n"
-              "      .then(function(html){\n"
-              "        if (modalBody) modalBody.innerHTML = html;\n"
-              "        var modal = bootstrap.Modal.getOrCreateInstance(modalEl);\n"
-              "        modal.show();\n"
-              "      })\n"
-              "      .catch(function(){\n"
-              "        if (modalBody) modalBody.innerHTML = '<div class=\"p-4 text-danger\">No se pudo cargar el formulario.</div>';\n"
-              "        var modal = bootstrap.Modal.getOrCreateInstance(modalEl);\n"
-              "        modal.show();\n"
-              "      });\n"
-              "  });\n"
-               "})();"]))
+  ))

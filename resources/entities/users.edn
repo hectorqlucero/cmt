@@ -43,7 +43,8 @@
  
  ;; Lifecycle hooks for business logic
  ;; Senior developer: Implement these in src/cgen/hooks/users.clj
- :hooks {:before-save :cmt.hooks.users/before-save}
+  :hooks {:before-save :cmt.hooks.users/before-save
+          :after-save :cmt.hooks.users/after-save}
  ;; Uncomment and implement as needed:
  ;; :hooks {:before-load :cmt.hooks.users/before-load
  ;;         :after-load :cmt.hooks.users/after-load

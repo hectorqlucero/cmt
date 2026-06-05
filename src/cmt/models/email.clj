@@ -114,3 +114,16 @@
                   "<p><b>Mi respuesta:</b><br/>" (or reply "") "</p>"
                   "<p><a href='" (or link "") "'>Ver aventura</a></p>")]
     (send-html-email! to subject body)))
+
+(defn send-welcome-email
+  [{:keys [email firstname lastname username temp-password]}]
+  (let [cfg (runtime-config)
+        base-url (or (:public-url cfg) (:base-url cfg) "http://localhost:3000/")
+        subject "Welcome! Your account has been created"
+        body (str "<h3>Welcome " (or firstname "") " " (or lastname "") "!</h3>"
+                  "<p>Your account has been created. Here are your login details:</p>"
+                  "<p><b>Username:</b> " (or username email) "</p>"
+                  "<p><b>Temporary password:</b> " temp-password "</p>"
+                  "<p><a href='" base-url "'>Login here</a></p>"
+                  "<p>Please change your password after logging in.</p>")]
+    (send-html-email! email subject body)))

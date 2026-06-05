@@ -1,6 +1,6 @@
-(ns cmt.db-test
+(ns cgen.db-test
   (:require [clojure.test :refer [deftest is testing]]
-            [cmt.models.db :as db]))
+            [cgen.models.db :as db]))
 
 (def mysql-spec {:subprotocol "mysql"})
 (def pg-spec    {:subprotocol "postgresql"})

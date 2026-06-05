@@ -1,4 +1,4 @@
-(ns cmt.core-test
+(ns cgen.core-test
   (:require [clojure.test :refer [deftest is testing]]
             [compojure.route :as route]))
 

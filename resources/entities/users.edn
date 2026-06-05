@@ -42,7 +42,7 @@
  ;; :audit? true
  
  ;; Lifecycle hooks for business logic
- ;; Senior developer: Implement these in src/cmt/hooks/users.clj
+ ;; Senior developer: Implement these in src/cgen/hooks/users.clj
  :hooks {:before-save :cmt.hooks.users/before-save}
  ;; Uncomment and implement as needed:
  ;; :hooks {:before-load :cmt.hooks.users/before-load

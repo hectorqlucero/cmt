@@ -4,10 +4,21 @@
    [clojure.string :as st]
    [cmt.i18n.core :as i18n]
    [cmt.handlers.home.model :refer [get-user get-users update-password]]
-  [cmt.handlers.home.view :refer [change-password-view main-view]]
+   [cmt.handlers.home.view :refer [change-password-view home-view
+                                         main-view]]
    [cmt.layout :refer [application]]
    [cmt.models.util :refer [get-session-id]]
    [ring.util.response :refer [redirect]]))
+
+(defn main
+  [request]
+  (let [title "Home"
+        ok (get-session-id request)
+        js nil
+        content (if (> ok 0)
+                  (home-view)
+                  [:h2.text-info.text-center (i18n/tr request :auth/welcome)])]
+    (application request title ok js content)))
 
 (defn login
   [request]

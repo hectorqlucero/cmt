@@ -163,7 +163,7 @@
   "Get column names for a table"
   [db table-name]
   (let [results (jdbc/query db [(str "SELECT * FROM " table-name " LIMIT 0")])]
-    (keys (first (jdbc/result-set-seq (.getMetaData (first results)))))))
+    (keys (first (jdbc/result-set-seq (.getMetaData ^java.sql.ResultSet (first results)))))))
 
 (defn table-exists?
   "Check if table exists in target database"

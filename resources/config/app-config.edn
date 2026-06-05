@@ -31,19 +31,13 @@
                "journal" "litera" "lumen" "lux" "materia" "minty"
                "morph" "pulse" "quartz" "sandstone" "simplex" "sketchy"
                "slate" "solar" "spacelab" "superhero" "united" "vapor"
-               "yeti" "zephyr"]
-      :default-theme "lumen"
+               "yeti" "lumen"]
+      :default-theme "sandstone"
       :assets {:base-path "/assets"
                :logo "/images/logo.png"
                :placeholder "/images/placeholder_profile.png"
                :thumbnail-width 42
-               :thumbnail-height 32}
-      :frontend {:css ["dataTables.bootstrap5.min.css"
-                       "bootstrap-icons/font/bootstrap-icons.css"]
-                 :js ["jquery-3.7.1.min.js"
-                      "bootstrap.bundle.min.js"
-                      "jquery.dataTables.min.js"
-                      "dataTables.bootstrap5.min.js"]}}
+               :thumbnail-height 32}}
 
  :security {:csrf-token-name "anti-forgery-token"
             :ajax-header "x-requested-with"
@@ -80,9 +74,9 @@
                           :db-name   "//localhost:5432/cmt"
                           :db-user   "postgres"
                           :db-pwd    "Patito0257."}
-               :main :localdb        ; Used for migrations (lein migrate)
-               :default :localdb     ; Used by the application
-               :db :localdb          ; Active database reference
+               :main :sqlite        ; Used for migrations (lein migrate)
+               :default :sqlite     ; Used by the application
+               :db :mysql           ; MySQL connection reference
                :pg :postgres        ; PostgreSQL connection reference
                :localdb :sqlite}    ; SQLite connection reference
 
@@ -102,11 +96,10 @@
  :allowed-image-exts ["jpg" "jpeg" "png" "gif" "bmp" "webp"]
 
  ;; --- Email Settings ---
- :email-host "smtp.fastmail.com"
+ :email-host "smtp.fastmail.com" ; smtp.provider.com
  :email-port 465
- :email-tls false
- :email-ssl true
- :email-user "hectorqlucero@fastmail.com"
+ :email-user "hectorqlucero@fastmail.com" ; joeblo@server.com
  :email-from "hectorqlucero@fastmail.com"
  :email-notify-to "hectorqlucero@gmail.com"
- :email-passwd "h64k9rq89m7ba4ap"}
+ :email-passwd "h64k9rq89m7ba4ap" ; The email provider password
+ :email-ssl true}

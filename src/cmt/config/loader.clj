@@ -29,9 +29,7 @@
                   :connection-params {:mysql {:use-ssl false :server-timezone "UTC"}
                                       :postgres {:sslmode "disable"}}}
        :ui {:themes ["sketchy" "cerulean" "cosmo" "cyborg" "darkly"]
-            :assets {:thumbnail-width 42 :thumbnail-height 32}
-            :frontend {:css ["dataTables.bootstrap5.min.css" "bootstrap-icons.css"]
-                       :js ["jquery-3.7.1.min.js" "jquery.dataTables.min.js"]}}
+            :assets {:thumbnail-width 42 :thumbnail-height 32}}
        :security {:csrf-token-name "anti-forgery-token"
                   :ajax-header "x-requested-with"
                   :session-secret-key "rs-session-key"}

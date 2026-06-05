@@ -1,6 +1,6 @@
-(ns cmt.db-vendor-test
+(ns cgen.db-vendor-test
   (:require [clojure.test :refer [deftest is testing]]
-            [cmt.models.db :as db]
+            [cgen.models.db :as db]
             [clojure.string :as str]
             [clojure.java.jdbc :as j]))
 

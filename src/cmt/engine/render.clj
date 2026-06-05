@@ -287,9 +287,15 @@
 
 (defn render-form
   "Renders a form for an entity based on its configuration.
-   Optional subgrid-fk: FK field id to hide and render as hidden input instead."
-  ([request entity row] (render-form request entity row nil))
-  ([request entity row subgrid-fk]
+   Optional subgrid-fk: FK field id to hide and render as hidden input instead.
+   Optional return-url: URL to redirect to after saving (used for subgrid forms).
+   Optional active-tab: tab pane id to reactivate after return.
+   Optional edited-id: record id to scroll to on the parent grid after save."
+  ([request entity row] (render-form request entity row nil nil nil nil))
+  ([request entity row subgrid-fk] (render-form request entity row subgrid-fk nil nil nil))
+  ([request entity row subgrid-fk return-url] (render-form request entity row subgrid-fk return-url nil nil))
+  ([request entity row subgrid-fk return-url active-tab] (render-form request entity row subgrid-fk return-url active-tab nil))
+  ([request entity row subgrid-fk return-url active-tab edited-id]
    (let [config (config/get-entity-config entity)
          fields (config/get-form-fields entity subgrid-fk)
          entity-name (name entity)
@@ -302,18 +308,39 @@
                                             :id (name subgrid-fk)
                                             :name (name subgrid-fk)
                                             :value (get row subgrid-fk)}))
+             return-url-hidden (when return-url
+                                 (form/build-field {:type "hidden"
+                                                    :id "return_url"
+                                                    :name "return_url"
+                                                    :value return-url}))
+             active-tab-hidden (when active-tab
+                                 (form/build-field {:type "hidden"
+                                                    :id "active_tab"
+                                                    :name "active_tab"
+                                                    :value active-tab}))
+             edited-id-hidden (when edited-id
+                                (form/build-field {:type "hidden"
+                                                   :id "edited_id"
+                                                   :name "edited_id"
+                                                   :value edited-id}))
              field-elements (map #(render-field % row) fields)
-             all-elements (if fk-hidden
-                            (cons fk-hidden field-elements)
-                            field-elements)
-             buttons (form/build-modal-buttons request)]
-         (form/form href all-elements buttons))))))
-
-(defn render-form-modal
-  "Renders a form wrapped in a modal."
-  [request title entity row]
-  (let [form-content (render-form request entity row)]
-    (grid/build-modal title row form-content)))
+             all-elements (cond-> field-elements
+                            fk-hidden (as-> els (cons fk-hidden els))
+                            return-url-hidden (as-> els (concat els [return-url-hidden]))
+                            active-tab-hidden (as-> els (concat els [active-tab-hidden]))
+                            edited-id-hidden (as-> els (concat els [edited-id-hidden])))
+              cancel-base (or return-url
+                              (if-let [id (:id row)]
+                                (str "/admin/" entity-name "/" id)
+                                (str "/admin/" entity-name)))
+              cancel-q (str/join "&"
+                                 (filter seq [(when active-tab (str "active_tab=" active-tab))
+                                              (when edited-id (str "edited_id=" edited-id))]))
+              cancel-url (if (seq cancel-q)
+                           (str cancel-base "?" cancel-q)
+                           cancel-base)
+             buttons (form/build-form-buttons {:cancel-url cancel-url})]
+        (form/form href all-elements buttons))))))
 
 (defn- build-fields-map
   "Builds a field map for grid rendering from entity config."
@@ -324,20 +351,33 @@
                      [(:id field) (:label field)])
                    display-fields))))
 
+(defn- extract-query-params
+  "Extracts pagination/search/sort params from a Ring request."
+  [request]
+  (let [params (:params request)]
+    {:search (get params :search "")
+     :sort-by (get params :sort-by "id")
+     :sort-order (get params :sort-order "desc")
+     :page (try (Integer/parseInt (get params :page "1"))
+                (catch Exception _ 1))}))
+
 (defn render-grid
-  "Renders a grid for an entity."
-  [request entity rows]
-  (let [config (config/get-entity-config entity)
-        entity-name (name entity)
-        title (:title config)
-        table-id (str entity-name "_table")
-        fields (build-fields-map entity)
-        href (str "/admin/" entity-name)
-        actions (or (:actions config) config/default-actions)
-        custom-grid-fn (get-in config [:ui :grid-fn])]
-    (if custom-grid-fn
-      (custom-grid-fn entity rows)
-      (grid/build-grid request title rows table-id fields href actions))))
+  "Renders a grid for an entity.
+   If page-info is provided, renders server-paginated grid with sort/search."
+  ([request entity rows]
+   (render-grid request entity rows nil nil))
+  ([request entity rows page-info current-params]
+   (let [config (config/get-entity-config entity)
+         entity-name (name entity)
+         title (:title config)
+         table-id (str entity-name "_table")
+         fields (build-fields-map entity)
+         href (str "/admin/" entity-name)
+         actions (or (:actions config) config/default-actions)
+         custom-grid-fn (get-in config [:ui :grid-fn])]
+     (if custom-grid-fn
+       (custom-grid-fn entity rows)
+       (grid/build-grid request title rows table-id fields href actions page-info current-params)))))
 
 (defn render-dashboard
   "Renders a read-only dashboard for an entity."
@@ -368,29 +408,6 @@
         actions (or (:actions config) config/default-actions)
         new-href (str href "/add-form/" parent-id)]
     (grid/build-grid-with-custom-new request title rows table-id fields href actions new-href)))
-
-(defn render-select-list
-  "Renders a simple list for selection (used in modals)."
-  [entity rows select-url]
-  (let [config (config/get-entity-config entity)
-        fields (build-fields-map entity)
-        entity-name (name entity)]
-    [:div.table-responsive
-     [:table.table.table-striped.table-bordered.table-hover
-      [:thead
-       [:tr
-        [:th "Select"]
-        (for [[_ label] fields]
-          [:th label])]]
-      [:tbody
-       (for [row rows]
-         [:tr
-          [:td
-           [:form {:method "get" :action select-url :style "display:inline"}
-            [:input {:type "hidden" :name "id" :value (:id row)}]
-            [:button.btn.btn-sm.btn-success {:type "submit"} "Select"]]]
-          (for [[field-id _] fields]
-            [:td (get row field-id)])])]]]))
 
 (defn render-error
   "Renders an error message."

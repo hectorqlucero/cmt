@@ -1,10 +1,10 @@
 (ns cmt.models.form
   (:require
-   [ring.util.anti-forgery :refer [anti-forgery-field]]
    [clojure.java.io :as io]
    [clojure.string :as str]
    [cmt.i18n.core :as i18n]
-   [cmt.models.crud :refer [config]]))
+   [cmt.models.crud :refer [config]]
+   [cmt.web.csrf :refer [csrf-field]]))
 
 (defn password-form
   "Renders a professional password change form with Bootstrap 5 styling"
@@ -21,7 +21,7 @@
               :action "/change/password"
               :class "needs-validation"
               :novalidate true}
-       (anti-forgery-field)
+       (csrf-field)
        [:div.mb-3
         [:label.form-label.fw-semibold {:for "email"}
          [:i.bi.bi-envelope.me-2] (i18n/tr nil :form/email)]
@@ -62,7 +62,7 @@
               :action href
               :class "needs-validation"
               :novalidate true}
-       (anti-forgery-field)
+       (csrf-field)
        [:div.mb-3
         [:label.form-label.fw-semibold {:for "username"}
          [:i.bi.bi-person.me-2] (i18n/tr nil :form/email)]
@@ -395,21 +395,6 @@
     :href (:href args)}
    (:label args)])
 
-(defn build-modal-buttons
-  "Creates professional modal buttons with conditional rendering"
-  [request & args]
-  (let [args (first args)
-        view (:view args)]
-    (list
-     (when-not (= view true)
-       [:button.btn.btn-primary.btn-lg.fw-semibold.shadow-sm.rounded
-        {:type "submit"}
-        (i18n/tr request :common/submit)])
-     [:button.btn.btn-outline-secondary.btn-lg.fw-semibold.shadow-sm.rounded
-      {:type "button"
-       :data-bs-dismiss "modal"}
-      (i18n/tr request :common/cancel)])))
-
 (defn build-form-buttons
   "Creates professional form buttons with Bootstrap 5 styling and HTML5 validation support.
    Args: {:cancel-url string, :view bool (optional)}"
@@ -443,7 +428,7 @@
                :action href
                :class "needs-validation"
                :novalidate false}
-        (anti-forgery-field)
+        (csrf-field)
         fields
         [:div.d-flex.gap-2.justify-content-end.mt-4
          (cond
@@ -468,7 +453,7 @@
                    :action href
                    :class "needs-validation"
                    :novalidate true}
-            (anti-forgery-field)
+            (csrf-field)
             fields
             [:div.d-flex.gap-2.justify-content-end.mt-4
              (cond
@@ -478,73 +463,3 @@
                (doall buttons)
                :else
                buttons)]]]]])))))
-
-(comment
-  ;; Example usage for testing
-  (build-field {:type "hidden" :id "user-id" :name "user-id" :value "42"})
-  (build-field {:label "Full Name" :type "text" :id "name" :name "name" :placeholder "Enter name" :required true :maxlength 50 :pattern "[A-Za-z ]+" :autocomplete "name" :autofocus true})
-  (build-field {:label "Email" :type "email" :id "email" :name "email" :placeholder "Enter email" :required true :autocomplete "email"})
-  (build-field {:label "Password" :type "password" :id "pw" :name "pw" :placeholder "Password" :required true :minlength 8 :autocomplete "new-password"})
-  (build-field {:label "Age" :type "number" :id "age" :name "age" :min 0 :max 120 :step 1 :required true})
-  (build-field {:label "Birthday" :type "date" :id "bday" :name "bday" :required true})
-  (build-field {:label "Appointment" :type "datetime-local" :id "appt" :name "appt"})
-  (build-field {:label "Favorite Color" :type "color" :id "color" :name "color" :value "#ff0000"})
-  (build-field {:label "Satisfaction" :type "range" :id "satisfaction" :name "satisfaction" :min 1 :max 10 :step 1 :value 5})
-  (build-field {:label "Phone" :type "tel" :id "phone" :name "phone" :pattern "[0-9\\-\\+ ]{7,15}" :autocomplete "tel"})
-  (build-field {:label "Website" :type "url" :id "website" :name "website" :placeholder "https://..."})
-  (build-field {:label "Resume" :type "file" :id "resume" :name "resume" :accept ".pdf,.doc,.docx" :multiple true})
-  (build-field {:label "Month" :type "month" :id "month" :name "month"})
-  (build-field {:label "Week" :type "week" :id "week" :name "week"})
-  (build-field {:label "Search" :type "search" :id "search" :name "search" :placeholder "Search..."})
-  (build-field {:label "User Level" :type "select" :id "level" :name "level" :value "U" :required true
-                :options [{:value "" :label "Select..."}
-                          {:value "U" :label "User"}
-                          {:value "A" :label "Admin" :disabled true}
-                          {:value "S" :label "Sys"}]
-                :multiple false :size 1})
-  (build-field {:label "Status" :type "radio" :name "active" :value "T"
-                :options [{:id "activeT" :label "Active" :value "T"}
-                          {:id "activeF" :label "Inactive" :value "F"}]})
-  (build-field {:label "Interests" :type "checkbox" :name "interests" :value "sports"
-                :options [{:id "sports" :label "Sports" :value "sports"}
-                          {:id "music" :label "Music" :value "music"}
-                          {:id "tech" :label "Tech" :value "tech"}]})
-  (build-field {:label "Comments" :type "textarea" :id "comments" :name "comments" :rows 4 :placeholder "Your comments..." :maxlength 500 :minlength 10 :spellcheck true})
-
-  ;; build-image-field: Image upload with preview
-  #_{:clj-kondo/ignore [:unresolved-symbol]}
-  (build-image-field row)
-
-  ;; build-image-field-script: JS for image preview
-  (build-image-field-script)
-
-  ;; build-primary-input-button: Primary submit button
-  (build-primary-input-button {:type "submit" :value "Save"})
-
-  ;; build-secondary-input-button: Secondary/cancel button
-  (build-secondary-input-button {:type "button" :value "Cancel"})
-
-  ;; build-primary-anchor-button: Primary anchor button
-  (build-primary-anchor-button {:label "Go" :href "/go"})
-
-  ;; build-secondary-anchor-button: Secondary anchor button
-  (build-secondary-anchor-button {:label "Back" :href "/back"})
-
-  ;; build-modal-buttons: Modal dialog buttons
-  (build-modal-buttons {:view false})
-
-  ;; build-form-buttons: Form submit/cancel buttons
-  (build-form-buttons {:cancel-url "/" :view false})
-
-  ;; form: Main form container with fields and buttons
-  (form "/submit"
-        [(build-field {:label "Name" :type "text" :id "name" :name "name" :placeholder "Name" :required true})
-         (build-field {:label "Email" :type "email" :id "email" :name "email" :placeholder "Email" :required true})
-         (build-field {:label "User Level" :type "select" :id "level" :name "level" :value "U" :required true
-                       :options [{:value "" :label "Select..."}
-                                 {:value "U" :label "User"}
-                                 {:value "A" :label "Admin"}
-                                 {:value "S" :label "Sys"}]})]
-        (list (build-primary-input-button {:type "submit" :value "Submit"})
-              (build-secondary-input-button {:type "button" :value "Cancel"}))
-        "Example Form"))

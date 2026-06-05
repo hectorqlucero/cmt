@@ -1,7 +1,7 @@
 (ns cmt.layout
   (:require
    [clj-time.core :as t]
-   [clojure.data.json :as json]
+
    [clojure.string :as str]
    [hiccup.page :refer [html5]]
    [cmt.models.crud :refer [config]]
@@ -67,22 +67,25 @@
       icon (assoc :icon icon))))
 
 (defn build-dropdown [request dropdown-id data-id label items & [icon]]
-  (when (some #{(user-level request)} ["A" "S" "U"])
-    [:li.nav-item.dropdown
-     [:a.nav-link.dropdown-toggle.fw-semibold.px-3.py-2.rounded.transition
-      {:href "#"
-       :id dropdown-id
-       :data-id data-id
-       :onclick "localStorage.setItem('active-link', this.dataset.id)"
-       :role "button"
-       :data-bs-toggle "dropdown"
-       :aria-expanded "false"}
-      (when icon [:i.me-2 {:class icon}])
-      label]
-     [:ul.dropdown-menu.shadow-lg.border-0.rounded.mt-2
-      {:aria-labelledby dropdown-id
-       :style "max-height: 60vh; overflow-y: auto;"}
-      (build-menu request items)]]))
+  (let [display-label (if (keyword? label)
+                        (i18n/tr request label)
+                        label)]
+    (when (some #{(user-level request)} ["A" "S" "U"])
+      [:li.nav-item.dropdown
+       [:a.nav-link.dropdown-toggle.fw-semibold.px-3.py-2.rounded.transition
+        {:href "#"
+         :id dropdown-id
+         :data-id data-id
+         :onclick "localStorage.setItem('active-link', this.dataset.id)"
+         :role "button"
+         :data-bs-toggle "dropdown"
+         :aria-expanded "false"}
+        (when icon [:i.me-2 {:class icon}])
+        display-label]
+       [:ul.dropdown-menu.shadow-lg.border-0.rounded.mt-2
+        {:aria-labelledby dropdown-id
+         :style "max-height: 60vh; overflow-y: auto;"}
+        (build-menu request items)]])))
 
 (defn create-dropdown [request {:keys [id data-id label items icon]}]
   (let [menu-items (map menu-item->map items)]
@@ -197,7 +200,7 @@
 
 ;; MENU FUNCTIONS
 (defn menus-private [request]
-  (let [{:keys [nav-links dropdowns]} (cmt.menu/get-menu-config request)]
+  (let [{:keys [nav-links dropdowns]} (cmt.menu/get-menu-config)]
     [:nav.navbar.navbar-expand-lg.navbar-dark.bg-gradient.bg-primary.shadow-lg.fixed-top
      [:div.container-fluid
       (brand-logo)
@@ -249,12 +252,7 @@
 ;; Add themes.css to the CSS includes
 (defn app-css []
   (list
-   [:link {:rel "stylesheet" :id "dt-theme-css" :href "/vendor/dataTables.bootstrap5.min.css"}]
-   [:link {:rel "stylesheet" :href "/vendor/buttons.bootstrap5.min.css"}]
-   [:link {:rel "stylesheet" :href "/vendor/jquery.dataTables.min.css"}]
-   [:link {:rel "stylesheet" :href "/vendor/buttons.dataTables.min.css"}]
    [:link {:rel "stylesheet" :href "/vendor/bootstrap-icons.css"}]
-   [:link {:rel "stylesheet" :href "/vendor/themes.css"}]
    [:link {:rel "stylesheet" :href "/vendor/dropdown-scroll-fix.css"}]
    [:link {:rel "stylesheet" :href "/css/tabgrid.css"}]
    [:style ".dropdown-menu .active, .dropdown-menu .active:focus, .dropdown-menu .active:hover { background-color: var(--bs-primary, #0d6efd) !important; color: #fff !important; }
@@ -276,45 +274,55 @@
 .theme-cyborg .logout-btn { background-color: #222 !important; color: #f6f6f6 !important; border-color: #f6f6f6 !important; }
 .theme-quartz .logout-btn:hover, .theme-superhero .logout-btn:hover, .theme-darkly .logout-btn:hover, .theme-cyborg .logout-btn:hover { background-color: var(--bs-primary, #0d6efd) !important; color: #fff !important; border-color: var(--bs-primary, #0d6efd) !important; }"]))
 
-(defn i18n-js-vars
-  "Outputs JavaScript variables with i18n translations for client-side use"
-  [request]
+(defn theme-js
+  "Inline theme.js: ~50 lines of vanilla JS for theme switching, nav highlight, and responsive tables."
+  []
   [:script
-   (str "window.i18nStrings = "
-        (json/write-str
-         {:emptyTable     (i18n/tr request :grid/no-records)
-          :info           (i18n/tr request :datatables/info)
-          :infoEmpty      (i18n/tr request :datatables/info-empty)
-          :infoFiltered   (i18n/tr request :datatables/info-filtered)
-          :lengthMenu     (i18n/tr request :datatables/length-menu)
-          :search         (i18n/tr request :datatables/search)
-          :searchPlaceholder (i18n/tr request :datatables/search-placeholder)
-          :zeroRecords    (i18n/tr request :datatables/zero-records)
-          :paginate       {:previous "<i class=\"bi bi-chevron-left\"></i>"
-                           :next     "<i class=\"bi bi-chevron-right\"></i>"}})
-        ";")])
+   (str
+    "(function(){
+"
+    ;; Theme dropdown click handlers — defer until DOM is ready
+    "var d=function(f){document.addEventListener('DOMContentLoaded',f);};
+"
+    "d(function(){
+"
+    ;; Theme option clicks
+    "  document.addEventListener('click',function(e){
+"
+    "    var t=e.target.closest('.theme-option');
+"
+    "    if(t){e.preventDefault();localStorage.setItem('theme',t.dataset.theme);location.reload();}
+"
+    "  });
+"
+    ;; Active nav link highlight
+    "  var a=localStorage.getItem('active-link');
+"
+    "  if(a){var e=document.querySelector('[data-id=\"'+a+'\"]');
+"
+    "    if(e){e.classList.add('active');}}
+"
+    ;; Language selector — highlight current locale
+    "  var loc=document.querySelector('#languageDropdown + .dropdown-menu .active');
+"
+    "  if(!loc){var flag=document.querySelector('#languageDropdown span');
+"
+    "    if(flag){var txt=flag.textContent.trim();
+"
+    "      document.querySelectorAll('#languageDropdown + .dropdown-menu a').forEach(function(a){
+"
+    "        if(a.textContent.trim()===txt){a.classList.add('active');}
+"
+    "      });}}
+"
+    "});})()")])
 
-(defn app-js [request]
+
+(defn app-scripts [request]
   (list
-   [:script {:src "/vendor/jquery-3.7.1.min.js"}]
    [:script {:src "/vendor/bootstrap.bundle.min.js"}]
-   [:script {:src "/vendor/jquery.dataTables.min.js"}]
-   [:script {:src "/vendor/dataTables.bootstrap5.min.js"}]
-   [:script {:src "/vendor/buttons.dataTables.min.js"}]
-   [:script {:src "/vendor/buttons.bootstrap5.min.js"}]
-   [:script {:src "/vendor/jszip.min.js"}]
-   [:script {:src "/vendor/pdfmake.min.js"}]
-   [:script {:src "/vendor/vfs_fonts.js"}]
-   [:script {:src "/vendor/buttons.html5.min.js"}]
-   [:script {:src "/vendor/buttons.print.min.js"}]
-   (i18n-js-vars request)
-   [:script {:src "/vendor/app.js"}]
-   [:script {:src "/js/tabgrid.js?v=3"}]
-   [:script {:src "/js/mhighlight.js"}]
-   [:script {:src "/js/lang.js"}]
-   ;; fk-dependent.js contains the logic for dependent selects & create modal
-   ;; bump version when editing so browsers reload the file
-   [:script {:src "/js/fk-dependent.js?v=6"}]))
+   (theme-js)
+    [:script {:src "/js/fk-dependent.js?v=6"}]))
 
 
 ;; LAYOUT FUNCTIONS
@@ -346,40 +354,23 @@
     (app-css)
     [:title title]]
    [:body.preload.theme-sketchy
-    [:div {:style "height: 70px;"}]
+    {:style "display:flex;flex-direction:column;min-height:100vh;overflow-x:hidden;"}
+    [:div {:style "flex-shrink:0;height:70px;"}]
     [:div.container-fluid.pt-3
-     {:style "min-height: 100vh;"}
+     {:style "flex:1;display:flex;flex-direction:column;min-height:0;overflow:hidden;"}
      (cond
        (= ok -1) (menus-none)
        (= ok 0) (menus-public)
        (> ok 0) (menus-private request))
      [:div.container-fluid.px-4
-      {:style "margin-top:32px; max-height:calc(100vh - 200px); overflow-y:auto; padding-bottom:80px;"}
-      (doall content)]]
-    [:div#exampleModal.modal.fade
-     {:tabindex "-1" :aria-labelledby "exampleModalLabel" :aria-hidden "true"}
-     [:div.modal-dialog
-      [:div.modal-content
-       [:div.modal-header.bg-primary.text-white
-        [:h5#exampleModalLabel.modal-title ""]
-        [:button.btn-close {:type "button" :data-bs-dismiss "modal" :aria-label "Close"}]]
-       [:div.modal-body]]]]
-    (app-js request)
+      {:style "flex:1;min-height:0;max-height:calc(100vh - 200px);overflow-y:auto;padding-bottom:80px;"}
+       (doall content)]]
+     (app-scripts request)
     js
     [:footer.bg-light.text-center.fixed-bottom.py-2.shadow-sm
      [:span "Copyright © "
       (t/year (t/now)) " " (:company-name config) " - All Rights Reserved"]]]))
 
-(defn error-404
-  ([msg] (error-404 msg nil))
-  ([msg redirect-url]
-   {:status 404
-    :headers {"Content-Type" "text/html; charset=utf-8"}
-    :body (html5 [:div
-                  [:h1 "Error 404"]
-                  [:p msg]
-                  (when redirect-url
-                    [:a {:href redirect-url} "Go back"])])}))
 (defn error-404
   ([msg] (error-404 msg nil))
   ([msg redirect-url]

@@ -17,8 +17,9 @@
                  [pdfkit-clj "0.1.7"]
                  [cljfmt "0.9.2"]
                  [clj-jwt "0.1.1"]
-                 [clj-time "0.15.2"]
-                 [date-clj "1.0.1"]
+                  [clj-time "0.15.2"]
+                  [date-clj "1.0.1"]
+                  [markdown-clj "1.12.2"]
                  [org.clojure/java.jdbc "0.7.12"]
                  ;; Active JDBC drivers (MySQL, PostgreSQL, SQLite)
                  [mysql/mysql-connector-java "8.0.33"]

@@ -38,12 +38,28 @@
       :reply reply
       :link (comment-link (:aventuras_id comment))})))
 
+(defn- parse-int [s default]
+  (try (Integer/parseInt (str/trim (str s))) (catch Exception _ default)))
+
 (defn pending
 	[request]
 	(let [title (i18n/tr request :comments/moderation-title)
 				ok (get-session-id request)
 				js nil
-				content (view/moderation-view request (model/pending-comments))]
+				q (some-> (get-in request [:params :q]) str str/trim not-empty)
+				status (or (some-> (get-in request [:params :status]) str str/trim not-empty) "pending")
+				page (parse-int (get-in request [:params :page]) 1)
+				per-page 50
+				filters {:status status :q q :page page :per-page per-page}
+				total (model/pending-comments-count filters)
+				total-pages (max 1 (int (Math/ceil (/ total per-page))))
+				comments (model/pending-comments filters)
+				content (view/moderation-view request {:comments comments
+				                                        :page page
+				                                        :total total
+				                                        :total-pages total-pages
+				                                        :status status
+				                                        :q q})]
 		(application request title ok js content)))
 
 (defn approve

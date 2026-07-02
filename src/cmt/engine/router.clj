@@ -10,6 +10,7 @@
    [cmt.engine.render :as render]
    [cmt.tabgrid.core :as tabgrid]
    [cmt.models.util :refer [get-session-id user-level]]
+   [cmt.i18n.core :as i18n]
    [cmt.layout :refer [application error-404]]))
 
 (defn- get-entity-from-request
@@ -35,9 +36,9 @@
 (defn- unauthorized-response
   "Returns an unauthorized response."
   [entity request]
-  (let [title "Access Denied"
+  (let [title (i18n/tr request :error/access-denied)
         ok (get-session-id request)
-        content (render/render-not-authorized entity (user-level request))]
+        content (render/render-not-authorized entity (user-level request) request)]
     (application request title ok nil content)))
 
 (defn- render-html
@@ -73,12 +74,12 @@
         (catch Exception e
           (println "[ERROR] Grid handler failed:" (.getMessage e))
           (.printStackTrace e)
-          (let [title "Error"
+          (let [title (i18n/tr request :error/server)
                 ok (get-session-id request)
                 content (render/render-error (.getMessage e))]
             (application request title ok nil content))))
       (unauthorized-response entity request))
-    (error-404 "Entity not found" "/")))
+    (error-404 (i18n/tr request :error/entity-not-found) "/")))
 
 (defn handle-dashboard
   "Handles dashboard view for an entity."
@@ -95,12 +96,12 @@
         (catch Exception e
           (println "[ERROR] Dashboard handler failed:" (.getMessage e))
           (.printStackTrace e)
-          (let [title "Error"
+          (let [title (i18n/tr request :error/server)
                 ok (get-session-id request)
                 content (render/render-error (.getMessage e))]
             (application request title ok nil content))))
       (unauthorized-response entity request))
-    (error-404 "Entity not found" "/")))
+    (error-404 (i18n/tr request :error/entity-not-found) "/")))
 
 (defn handle-add-form
   "Handles add form display. Renders a full page with the form."
@@ -109,7 +110,7 @@
     (if (check-permission entity request)
       (try
         (let [cfg (config/get-entity-config entity)
-              title (str "New " (:title cfg))
+              title (i18n/tr request :common/new-entity {:title (:title cfg)})
               ok (get-session-id request)
               parent-id (get-in request [:params :parent_id])
               parent-entity-str (get-in request [:params :parent_entity])
@@ -132,11 +133,11 @@
         (catch Exception e
           (println "[ERROR] Add form handler failed:" (.getMessage e))
           (.printStackTrace e)
-          (application request "Error" (get-session-id request) nil
+          (application request (i18n/tr request :error/server) (get-session-id request) nil
                        (render/render-error (.getMessage e)))))
-      (application request "Not Authorized" (get-session-id request) nil
-                   (render/render-error "Not authorized")))
-    (error-404 "Entity not found" "/")))
+      (application request (i18n/tr request :error/access-denied) (get-session-id request) nil
+                   (render/render-error (i18n/tr request :error/unauthorized))))
+    (error-404 (i18n/tr request :error/entity-not-found) "/")))
 
 (defn handle-edit-form
   "Handles edit form display. Renders a full page with the form."
@@ -150,21 +151,21 @@
               edited-id (get-in request [:params :edited_id])
               row (query/get-with-hooks entity id)
               cfg (config/get-entity-config entity)
-              title (str "Edit " (:title cfg))
+              title (i18n/tr request :common/edit-entity {:title (:title cfg)})
               ok (get-session-id request)]
           (if row
             (application request title ok nil
                          (render/render-form request entity row nil return-url active-tab edited-id))
-            (application request "Record Not Found" ok nil
-                         (render/render-error "Record not found"))))
+            (application request (i18n/tr request :error/record-not-found) ok nil
+                         (render/render-error (i18n/tr request :error/record-not-found)))))
         (catch Exception e
           (println "[ERROR] Edit form handler failed:" (.getMessage e))
           (.printStackTrace e)
-          (application request "Error" (get-session-id request) nil
+          (application request (i18n/tr request :error/server) (get-session-id request) nil
                        (render/render-error (.getMessage e)))))
-      (application request "Not Authorized" (get-session-id request) nil
-                   (render/render-error "Not authorized")))
-    (error-404 "Entity not found" "/")))
+      (application request (i18n/tr request :error/access-denied) (get-session-id request) nil
+                   (render/render-error (i18n/tr request :error/unauthorized))))
+    (error-404 (i18n/tr request :error/entity-not-found) "/")))
 
 (defn handle-save
   "Handles form save (create/update)."
@@ -223,12 +224,12 @@
           {:status 500
            :headers {"Content-Type" "application/json"}
            :body (str "{\"ok\":false,\"error\":" (pr-str (.getMessage e)) "}")}))
-      {:status 403
-       :headers {"Content-Type" "application/json"}
-       :body "{\"ok\":false,\"error\":\"Not authorized\"}"})
-    {:status 404
-     :headers {"Content-Type" "application/json"}
-     :body "{\"ok\":false,\"error\":\"Entity not found\"}"}))
+       {:status 403
+        :headers {"Content-Type" "application/json"}
+        :body (str "{\"ok\":false,\"error\":\"" (i18n/tr request :error/unauthorized) "\"")})
+     {:status 404
+      :headers {"Content-Type" "application/json"}
+        :body (str "{\"ok\":false,\"error\":\"" (i18n/tr request :error/entity-not-found) "\"")}))
 
 (defn handle-delete
   "Handles record deletion."
@@ -254,14 +255,14 @@
                                  (or return-url (str "/admin/" entity-name)))]
               {:status 302
                :headers {"Location" redirect-url}})
-            (error-404 (or (:error result) "Unable to delete record!")
-                       (str "/admin/" entity-name))))
+            (error-404 (or (:error result) (i18n/tr request :error/unable-to-delete))
+                       (str "/admin/" entity-name) request)))
         (catch Exception e
           (println "[ERROR] Delete handler failed:" (.getMessage e))
           (.printStackTrace e)
-          (error-404 (.getMessage e) (str "/admin/" (name entity)))))
-      (error-404 "Not authorized" "/"))
-    (error-404 "Entity not found" "/")))
+          (error-404 (.getMessage e) (str "/admin/" (name entity)) request)))
+      (error-404 (i18n/tr request :error/unauthorized) "/" request))
+    (error-404 (i18n/tr request :error/entity-not-found) "/" request)))
 
 (defn handle-subgrid
   "Handles subgrid AJAX requests."
@@ -312,10 +313,10 @@
            :body (render-html (render/render-error (.getMessage e)))}))
       {:status 403
        :headers {"Content-Type" "text/html"}
-       :body (render-html (render/render-error "Not authorized"))})
+       :body (render-html (render/render-error (i18n/tr request :error/unauthorized)))})
     {:status 404
      :headers {"Content-Type" "text/html"}
-     :body (render-html (render/render-error "Entity not found"))}))
+     :body (render-html (render/render-error (i18n/tr request :error/entity-not-found)))}))
 
 (defroutes engine-routes
   ;; Admin Grid Routes

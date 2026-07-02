@@ -1,12 +1,12 @@
 (ns cmt.hooks.videos
   "Business logic hooks for videos entity.
    
-   SENIOR DEVELOPER: Implement custom business logic here.
-   
-   See: HOOKS_GUIDE.md for detailed documentation and examples.
-   Example: src/cmt/hooks/alquileres.clj
-   
-   Uncomment the hooks you need and implement the logic.")
+    SENIOR DEVELOPER: Implement custom business logic here.
+    
+    See: HOOKS_GUIDE.md for detailed documentation and examples.
+    Example: src/cmt/hooks/alquileres.clj
+    
+    Uncomment the hooks you need and implement the logic.")
 
 ;; =============================================================================
 ;; Validators
@@ -71,14 +71,14 @@
 (defn before-save
   "Hook executed before saving a record.
    
-   Use cases:
-   - Validate data
-   - Set defaults
-   - Transform values
-   - Check permissions
-   
-   Args: [params] - Form data to be saved
-   Returns: Modified params map OR {:errors {...}} if validation fails"
+    Use cases:
+    - Validate data
+    - Set defaults
+    - Transform values
+    - Check permissions
+    
+    Args: [params] - Form data to be saved
+    Returns: Modified params map OR {:errors {...}} if validation fails"
   [params]
   (println "[INFO] Saving videos...")
   ;; TODO: Add validation and transformation logic

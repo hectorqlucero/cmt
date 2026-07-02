@@ -2,6 +2,28 @@
   (:require
    [cmt.models.crud :refer [db Query]]))
 
+(defn- safe-count
+  [sql]
+  (try (or (some-> (first (Query db sql)) :total) 0) (catch Exception _ 0)))
+
+(defn total-adventures []
+  (safe-count ["SELECT COUNT(*) AS total FROM aventuras"]))
+
+(defn total-groups []
+  (safe-count ["SELECT COUNT(*) AS total FROM cmt"]))
+
+(defn total-videos []
+  (safe-count ["SELECT COUNT(*) AS total FROM videos"]))
+
+(defn total-photos []
+  (safe-count ["SELECT COUNT(*) AS total FROM fotos"]))
+
+(defn total-shops []
+  (safe-count ["SELECT COUNT(*) AS total FROM talleres"]))
+
+(defn pending-comments-count []
+  (safe-count ["SELECT COUNT(*) AS total FROM aventuras_link WHERE COALESCE(approved, 0) != 1"]))
+
 (defn groups-with-counts
   []
   (Query db

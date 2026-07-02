@@ -11,6 +11,13 @@
 	(let [title (i18n/tr request :travel-hub/title)
 				ok (get-session-id request)
 				js nil
-				content (view/hub-view request {:groups (model/groups-with-counts)
-																				:adventures (model/latest-adventures)})]
+				stats {:total-adventures (model/total-adventures)
+				       :total-groups (model/total-groups)
+				       :total-videos (model/total-videos)
+				       :total-photos (model/total-photos)
+				       :total-shops (model/total-shops)
+				       :pending-comments (model/pending-comments-count)}
+				content (view/hub-view request {:stats stats
+				                                :groups (model/groups-with-counts)
+																			  :adventures (model/latest-adventures)})]
 		(application request title ok js content)))

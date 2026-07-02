@@ -9,9 +9,12 @@
  :title "Videos"  ;; Edit this to your preference
  :table "videos"
  :connection :default
- :rights ["U" "A" "S"]  ;; User levels: U=User, A=Admin, S=System
+ :rights ["A" "S"]  ;; User levels: U=User, A=Admin, S=System
  :mode :parameter-driven
- 
+:menu-category :travel
+:menu-order 40
+:menu-icon "bi bi-camera-video"
+
  ;; Fields auto-detected from database schema
  :fields [
           {:id :id :label "ID" :type :hidden}
@@ -26,19 +29,18 @@
  ;; Available actions
  :actions {:new true :edit true :delete true}
  
- ;; Enable audit trail (tracks who created/modified and when)
- ;; Uncomment to enable:
- ;; :audit? true
+  ;; Enable audit trail (tracks who created/modified and when)
+  :audit? true
  
- ;; Lifecycle hooks for business logic
- ;; Senior developer: Implement these in src/cmt/hooks/videos.clj
- ;; Uncomment and implement as needed:
- ;; :hooks {:before-load :cmt.hooks.videos/before-load
- ;;         :after-load :cmt.hooks.videos/after-load
- ;;         :before-save :cmt.hooks.videos/before-save
- ;;         :after-save :cmt.hooks.videos/after-save
- ;;         :before-delete :cmt.hooks.videos/before-delete
- ;;         :after-delete :cmt.hooks.videos/after-delete}
+  ;; Lifecycle hooks for business logic
+  ;; Senior developer: Implement these in src/cmt/hooks/videos.clj
+  ;; Uncomment and implement as needed:
+  ;; :hooks {:before-load :cmt.hooks.videos/before-load
+  ;;         :after-load :cmt.hooks.videos/after-load
+  ;;         :before-save :cmt.hooks.videos/before-save
+  ;;         :after-save :cmt.hooks.videos/after-save
+  ;;         :before-delete :cmt.hooks.videos/before-delete
+  ;;         :after-delete :cmt.hooks.videos/after-delete}
  
  ;; Subgrids (parent-child relationships)
  ;; Uncomment if this entity has child records:

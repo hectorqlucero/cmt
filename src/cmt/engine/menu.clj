@@ -93,10 +93,7 @@
 (defn category->label
   "Builds a display label for a category key when no explicit label is configured."
   [category-key]
-  (-> category-key
-      name
-      (str/replace #"[-_]+" " ")
-      str/capitalize))
+  (keyword "menu-category" (str/lower-case (name category-key))))
 
 (defn generate-menu-items
   "Generates menu items from discovered entities.
@@ -123,10 +120,11 @@
                      (first rights))
         icon (or (:dropdown-icon entity-info)
                  (:menu-icon entity-info)) ; Use dropdown-icon when present, otherwise fallback to menu-icon
-        order (:order entity-info)]
+        order (:order entity-info)
+        label (keyword "entity" (name (:entity entity-info)))]
     (if icon
-      [(:href entity-info) (:title entity-info) rights-str order icon]
-      [(:href entity-info) (:title entity-info) rights-str order])))
+      [(:href entity-info) label rights-str order icon]
+      [(:href entity-info) label rights-str order])))
 
 (defn generate-dropdown-config
   "Generates dropdown configuration for a category"

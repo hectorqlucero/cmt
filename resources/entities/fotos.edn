@@ -9,9 +9,12 @@
  :title "Fotos"  ;; Edit this to your preference
  :table "fotos"
  :connection :default
- :rights ["U" "A" "S"]  ;; User levels: U=User, A=Admin, S=System
+ :rights ["A" "S"]  ;; User levels: U=User, A=Admin, S=System
  :mode :parameter-driven
- 
+:menu-category :travel
+:menu-order 30
+:menu-icon "bi bi-images"
+
  ;; Fields auto-detected from database schema
  :fields [
           {:id :id :label "ID" :type :hidden}
@@ -25,19 +28,18 @@
  ;; Available actions
  :actions {:new true :edit true :delete true}
  
- ;; Enable audit trail (tracks who created/modified and when)
- ;; Uncomment to enable:
- ;; :audit? true
+  ;; Enable audit trail (tracks who created/modified and when)
+  :audit? true
  
- ;; Lifecycle hooks for business logic
- ;; Senior developer: Implement these in src/cmt/hooks/fotos.clj
- ;; Uncomment and implement as needed:
- ;; :hooks {:before-load :cmt.hooks.fotos/before-load
- ;;         :after-load :cmt.hooks.fotos/after-load
- ;;         :before-save :cmt.hooks.fotos/before-save
- ;;         :after-save :cmt.hooks.fotos/after-save
- ;;         :before-delete :cmt.hooks.fotos/before-delete
- ;;         :after-delete :cmt.hooks.fotos/after-delete}
+  ;; Lifecycle hooks for business logic
+  ;; Senior developer: Implement these in src/cmt/hooks/fotos.clj
+  ;; Uncomment and implement as needed:
+  ;; :hooks {:before-load :cmt.hooks.fotos/before-load
+  ;;         :after-load :cmt.hooks.fotos/after-load
+  ;;         :before-save :cmt.hooks.fotos/before-save
+  ;;         :after-save :cmt.hooks.fotos/after-save
+  ;;         :before-delete :cmt.hooks.fotos/before-delete
+  ;;         :after-delete :cmt.hooks.fotos/after-delete}
  
  ;; Subgrids (parent-child relationships)
  ;; Uncomment if this entity has child records:

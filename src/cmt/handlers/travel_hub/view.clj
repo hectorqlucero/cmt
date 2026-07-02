@@ -45,10 +45,13 @@
          (let [ts (parse-epoch-ms fecha)]
            (when (and ts (>= ts 1000000000000))
              (let [instant (java.time.Instant/ofEpochMilli ts)
-                   zdt (-> instant (.atZone (java.time.ZoneId/of "UTC")))
-                   formatter (java.time.format.DateTimeFormatter/ofPattern "d 'de' MMMM 'de' yyyy" (java.util.Locale. "es"))]
-               (.format formatter zdt)))))
-       "-")
+                    zdt (-> instant (.atZone (java.time.ZoneId/of "UTC")))
+                    locale (i18n/get-locale-from-session (:session request))
+                    locale-str (name locale)
+                    pattern (if (= locale-str "en") "MMMM d, yyyy" "d 'de' MMMM 'de' yyyy")
+                    formatter (java.time.format.DateTimeFormatter/ofPattern pattern (java.util.Locale. locale-str))]
+                (.format formatter zdt)))))
+        "-")
       " | "
       (or cmt_nombre (str (i18n/tr request :travel-hub/group-label) " #" cmt_id))]
      [:p.small.mb-0 (str (i18n/tr request :travel-hub/links-count) ": " enlaces_count)]]
@@ -60,7 +63,15 @@
        {:href (str "/admin/aventuras_link/add-form/" id "?parent_entity=aventuras&return_url=/admin/travel-hub")}
       (i18n/tr request :travel-hub/new-link)]]]])
 
-(defn hub-view [request {:keys [groups adventures]}]
+(defn- stat-card [label value icon url]
+  [:div.col-6.col-md-4.col-lg-2.mb-3
+   [:a.card.border-0.shadow-sm.text-decoration-none.h-100 {:href url :style "transition:transform .15s;display:block;"}
+    [:div.card-body.text-center.p-3
+     [:div.text-primary.fs-4.mb-1 icon]
+     [:p.h5.mb-0.fw-bold value]
+     [:p.small.text-muted.mb-0 label]]]])
+
+(defn hub-view [request {:keys [stats groups adventures]}]
   (list
    [:section.mb-4
     [:div.rounded-4.p-4.shadow-sm
@@ -69,6 +80,15 @@
       (i18n/tr request :travel-hub/kicker)]
      [:h1.h3.mb-2 (i18n/tr request :travel-hub/title)]
      [:p.mb-0.opacity-75 (i18n/tr request :travel-hub/subtitle)]]]
+
+   (when stats
+     [:section.row.g-2.mb-4
+      (stat-card (i18n/tr request :travel-hub/adventures-count) (:total-adventures stats) "🏍" "/admin/aventuras")
+      (stat-card (i18n/tr request :travel-hub/groups-label) (:total-groups stats) "👥" "/admin/cmt")
+      (stat-card (i18n/tr request :blog/recent-videos) (:total-videos stats) "🎬" "/admin/videos")
+      (stat-card (i18n/tr request :blog/photo-links) (:total-photos stats) "📷" "/admin/fotos")
+      (stat-card (i18n/tr request :blog/trusted-workshops) (:total-shops stats) "🔧" "/admin/talleres")
+      (stat-card (str (i18n/tr request :comments/status-pending) " 💬") (:pending-comments stats) "⏳" "/admin/comments/pending")])
 
    [:section.row.g-4
     [:div.col-12.col-lg-6

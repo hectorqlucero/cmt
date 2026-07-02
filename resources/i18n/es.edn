@@ -27,35 +27,32 @@
  :common/confirm "Confirmar"
  :common/select "Seleccionar"
  :common/required "Requerido"
+ :common/theme "Tema"
+ :common/default "Predeterminado"
 
- ;; [DEMO] Menu Categories — reemplazar con la estructura de navegación propia
- :menu/clients "Clientes"
- :menu/properties "Propiedades"
- :menu/transactions "Transacciones"
- :menu/financial "Finanzas"
- :menu/documents "Documentos"
+ ;; [GENERIC] Menu items
+ :menu/home "Inicio"
+ :menu/ride-blog "Blog de Ruta"
+ :menu/travel-hub "Centro de Aventuras"
+ :menu/pending-comments "Comentarios"
  :menu/system "Sistema"
  :menu/admin "Administración"
  :menu/logout "Cerrar Sesión"
  :menu/profile "Perfil"
  :menu/settings "Configuración"
+ :menu-category/travel "Viajes"
+ :menu-category/users "Usuarios"
+ :menu-category/system "Sistema"
 
- ;; [DEMO] Entities — reemplazar con los nombres de entidades del proyecto
- :entity/alquileres "Alquileres"
- :entity/ventas "Ventas"
- :entity/propiedades "Propiedades"
- :entity/clientes "Clientes"
- :entity/agentes "Agentes"
- :entity/avaluos "Avalúos"
- :entity/comisiones "Comisiones"
- :entity/contratos "Contratos"
- :entity/documentos "Documentos"
- :entity/fiadores "Fiadores"
- :entity/pagos_renta "Pagos de Renta"
- :entity/pagos_ventas "Pagos de Ventas"
- :entity/tramites "Trámites"
+ ;; [GENERIC] Entity labels
  :entity/bitacora "Bitácora"
  :entity/users "Usuarios"
+ :entity/aventuras "Aventuras"
+ :entity/videos "Videos"
+ :entity/talleres "Talleres"
+ :entity/fotos "Fotos"
+ :entity/cmt "Grupos de Ruta"
+ :entity/aventuras_link "Enlaces de Aventura"
 
  ;; [GENERIC] Form Labels
  :form/email "Correo Electrónico"
@@ -70,6 +67,11 @@
  :form/status "Estado"
  :form/notes "Notas"
  :form/file "Archivo"
+ :form/email-required "El correo es requerido"
+ :form/password-required "La contraseña es requerida"
+ :form/upload-image "Subir Imagen"
+ :form/add-new "Agregar nuevo"
+ :form/field-required "{field} es requerido"
 
  ;; [GENERIC] Validation Messages
  :validation/required "{field} es requerido"
@@ -85,6 +87,7 @@
  ;; [GENERIC] Error Messages
  :error/general "Ocurrió un error. Por favor intente nuevamente"
  :error/not-found "Registro no encontrado"
+ :error/entity-not-found "Entidad no encontrada"
  :error/unauthorized "No tiene permisos para realizar esta acción"
  :error/forbidden "Acceso denegado"
  :error/server "Error del servidor"
@@ -93,6 +96,10 @@
  :error/invalid-data "Datos inválidos"
  :error/database "Error de base de datos"
  :error/file-upload "Error al subir archivo"
+ :error/access-denied "Acceso Denegado"
+ :error/not-authorized "No autorizado para acceder {path}. Nivel(es) requerido(s): {levels}. Su nivel: {level}"
+ :error/record-not-found "Registro no encontrado"
+ :error/unable-to-delete "¡No se puede eliminar el registro!"
 
  ;; [GENERIC] Success Messages
  :success/saved "Guardado exitosamente"
@@ -155,27 +162,39 @@
  :subgrid/link-title "Vincular {title}"
  :subgrid/link-form-title "Vincular {title}"
  :subgrid/no-available-records "No hay registros disponibles para vincular"
- :subgrid/select-records "Seleccione registros para vincular"
+   :subgrid/select-records "Seleccione registros para vincular"
+   :subgrid/rel-11 "Relación 1:1"
+   :subgrid/rel-1n "Relación 1:N"
+   :subgrid/rel-nm "Relación M:N"
  :grid/no-records "No se encontraron registros"
  :confirm/unlink "¿Desvincular?"
  :pivot/edit-attributes "Editar atributos"
  :pivot/no-attributes "No hay atributos pivote para editar."
  :pivot/edit-title "Editar {title}"
 
- ;; [DEMO] Business Logic (Alquileres example) — reemplazar con la lógica de negocio propia
- :alquiler/duration "Duración"
- :alquiler/initial-total "Total Inicial"
- :alquiler/monthly-payment "Pago Mensual"
- :alquiler/deposit "Depósito"
- :alquiler/active "Activo"
- :alquiler/expired "Vencido"
- :alquiler/canceled "Cancelado"
+
 
  ;; [GENERIC] Language Selector
  :lang/select "Seleccionar idioma"
  :lang/spanish "Español"
  :lang/english "English"
- :common/clear "Limpiar"
+ :grid/page-info "Página {page} de {total-pages} ({total} registros)"
+  :grid/confirm-delete "¿Está seguro?"
+  :grid/records "registros"
+  :common/clear "Limpiar"
+ :common/toggle-navigation "Alternar navegación"
+ :common/breadcrumb "Miga de pan"
+ :common/na "N/D"
+ :common/placeholder-number "0"
+ :common/placeholder-decimal "0.00"
+ :common/seo-default "Explora aventuras en {site}"
+ :common/go-back-link "← Regresar"
+ :common/new-entity "Nuevo {title}"
+ :common/edit-entity "Editar {title}"
+  :common/copyright "Derechos de autor ©"
+:common/all-rights-reserved "Todos los derechos reservados"
+:common/error-404 "Error 404"
+:common/go-back "Regresar"
 
  ;; [GENERIC] Blog
  :blog/title "Blog de Ruta"
@@ -237,7 +256,16 @@
  :blog/photos-page-subtitle "Galeria de enlaces, ordenada de mas reciente a mas antigua."
  :blog/workshops-page-title "Todos los talleres recomendados"
  :blog/workshops-page-subtitle "Directorio completo de talleres para tus rutas."
- :blog/adventure-not-found "Aventura no encontrada"
+  :blog/adventure-not-found "Aventura no encontrada"
+  :blog/share-label "Compartir:"
+   :blog/view-all "Ver todas"
+   :blog/share-x "X"
+   :blog/na-date "N/D"
+   :blog/rss-author "Anónimo"
+   :blog/share-facebook "Facebook"
+   :blog/share-whatsapp "WhatsApp"
+   :blog/translate "Traducir"
+   :blog/translate-title "Abrir esta página en Google Translate (Inglés)"
 
  ;; [GENERIC] Comments moderation
  :comments/moderation-title "Moderación de comentarios"
@@ -247,7 +275,9 @@
  :comments/reply "Responder"
  :comments/reply-placeholder "Escribe tu respuesta para el comentarista..."
  :comments/status-pending "Pendiente"
- :comments/status-approved "Aprobado"
+  :comments/status-approved "Aprobado"
+  :comments/filter-all "Todo"
+  :comments/no-date "-"
 
  ;; [GENERIC] Travel Hub (admin helper)
  :travel-hub/kicker "Panel simplificado"
@@ -269,4 +299,14 @@
  :travel-hub/no-adventures "No hay aventuras registradas."
  :travel-hub/date "Fecha"
  :travel-hub/story "Historia"
- :travel-hub/group "Grupo"}
+    :travel-hub/group "Grupo"
+   :travel-hub/no-date "-"
+
+ ;; [GENERIC] Config reload
+ :config/reload-title "Configuración Recargada"
+ :config/reload-desc "Todas las configuraciones de entidades se han recargado desde el disco."
+ :config/reload-edn "Archivos EDN de entidades: recargados"
+ :config/reload-hooks "Funciones hook: recargadas"
+ :config/reload-cache "Caché de configuración: limpiada"
+ :config/reload-failed "Error al Recargar"
+ :config/reload-error "{error}"}

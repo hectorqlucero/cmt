@@ -2,21 +2,32 @@
 	(:require
 	 [clojure.string :as str]
 	 [cmt.i18n.core :as i18n]
+	 [cmt.models.crud :as crud]
 	 [hiccup.util :refer [raw-string]]
-	 [ring.util.anti-forgery :refer [anti-forgery-field]]))
+	 [ring.util.anti-forgery :refer [anti-forgery-field]]
+   [markdown.core :as md]))
 
 (defn- format-fecha
-	"Convert Unix timestamp (ms) to readable date string in Spanish."
-	[timestamp-str]
-	(if-let [ms (try (Long/parseLong (str/trim (str timestamp-str))) (catch Exception _ nil))]
-		(try
-			(let [instant (java.time.Instant/ofEpochMilli ms)
-				  zdt (-> instant (.atZone (java.time.ZoneId/of "UTC")))
-				  date (.toLocalDate zdt)
-				  formatter (java.time.format.DateTimeFormatter/ofPattern "d 'de' MMMM 'de' yyyy" (java.util.Locale. "es"))]
-				(.format date formatter))
-			(catch Exception _ "N/A"))
-		"N/A"))
+	"Convert a date (Unix ms timestamp or YYYY-MM-DD string) to a readable date."
+	[date-str & [locale]]
+	(let [locale-str (name (or locale :es))
+		  s (str/trim (str date-str))
+		  parse-as-ms (try (Long/parseLong s) (catch Exception _ nil))
+		  parse-as-date (when (re-matches #"\d{4}-\d{2}-\d{2}" s)
+						  (try (java.time.LocalDate/parse s) (catch Exception _ nil)))
+		  local-date (or (when parse-as-ms
+						  (try (-> (java.time.Instant/ofEpochMilli parse-as-ms)
+								   (.atZone (java.time.ZoneId/of "UTC"))
+								   .toLocalDate)
+							   (catch Exception _ nil)))
+						 parse-as-date)]
+		(if local-date
+			(try
+				(let [pattern (if (= locale-str "en") "MMMM d, yyyy" "d 'de' MMMM 'de' yyyy")
+					  formatter (java.time.format.DateTimeFormatter/ofPattern pattern (java.util.Locale. locale-str))]
+					(.format local-date formatter))
+				(catch Exception _ ""))
+			"")))
 
 (defn- shorten
 	[text max-len]
@@ -31,6 +42,9 @@
 		(if (even? day)
 			{:url "/images/blog-cover-cinematic.svg"}
 			{:url "/images/blog-cover-creative.svg"})))
+
+(defn- date-locale [request]
+  (i18n/get-locale-from-session (:session request)))
 
 (defn- stat-chip [label value href]
 		[:a.blog-stat {:href href}
@@ -68,7 +82,7 @@
 @media (max-width:576px){.blog-list-shell{padding:10px;}.blog-list-canvas{padding:14px;}.blog-list-head{padding:.85rem .9rem;}}"]
 	 [:section.blog-list-shell
 		[:div.blog-list-canvas
-		 [:nav {:aria-label "breadcrumb"}
+		 [:nav {:aria-label (i18n/tr request :common/breadcrumb)}
 			[:ol.breadcrumb.mb-3.bg-transparent
 				[:li.breadcrumb-item [:a {:href "/blog"} (i18n/tr request :blog/blog-label)]]
 				[:li.breadcrumb-item.active breadcrumb-label]]]
@@ -176,7 +190,26 @@
 				     [:div.col-lg-5
 				      [:div.blog-home-visual
 				       [:div.blog-home-frame
-				        [:img.blog-home-image {:src (:url cover) :alt ""}]]]]]]]])))
+				        [:img.blog-home-image {:src (:url cover) :alt ""}]]]]]]]
+				  ;; Latest stories preview
+				  (when (seq adventures)
+				   [:section.mt-4
+				    [:div.d-flex.align-items-center.justify-content-between.mb-3
+				     [:h2.h4.fw-bold.mb-0 (i18n/tr request :blog/latest-ride-stories)]
+				     [:a.btn.btn-sm.btn-outline-dark.rounded-pill.px-3 {:href "/blog/stories"}
+				      (str (i18n/tr request :blog/view-all) " →")]]
+				    [:div.row.row-cols-1.row-cols-md-2.row-cols-lg-3.g-3
+				     (for [{:keys [id aventura fecha cmt_nombre leader_email]} (take 3 adventures)]
+				      [:div.col {:key (str "preview-" id)}
+				       [:article.blog-item-card.card.h-100.border-0
+				        [:div.card-body
+				         [:p.blog-item-meta
+				          (str (format-fecha fecha (date-locale request)) "  •  " (or cmt_nombre (i18n/tr request :blog/open-route)))]
+				         [:h3.h6.blog-item-title (card-title request {:id id :aventura aventura})]
+				         [:p.blog-item-copy (shorten aventura 200)]
+				         [:div.blog-item-actions
+				          [:a.btn.btn-sm.btn-dark.rounded-pill.px-3 {:href (str "/blog/adventure/" id)}
+				           (i18n/tr request :blog/read-full-story) " →"]]]]])]])])))
 (defn stories-list-view
 	[request {:keys [adventures page total total-pages per-page q]}]
 	(list-page-shell
@@ -194,7 +227,7 @@
 				 [:article.blog-item-card.card.h-100.border-0
 					[:div.card-body
 					 [:p.blog-item-meta
-						(str (format-fecha fecha)
+						(str (format-fecha fecha (date-locale request))
 							 "  •  "
 							 (or cmt_nombre (i18n/tr request :blog/open-route)))]
 					 [:h2.blog-item-title (card-title request {:id id :aventura aventura})]
@@ -229,7 +262,7 @@
 		  (for [{:keys [id fecha titulo enlace]} videos]
 			[:article.blog-item-card.card.border-0 {:key (str "video-" id)}
 			 [:div.card-body
-				[:p.blog-item-meta (format-fecha fecha)]
+				[:p.blog-item-meta (format-fecha fecha (date-locale request))]
 				[:h2.blog-item-title (or titulo (i18n/tr request :blog/video-label))]
 				[:div.blog-item-actions
 				 [:a.btn.btn-sm.btn-dark.rounded-pill.px-3
@@ -254,7 +287,7 @@
 			[:div.col {:key (str "photo-" id)}
 			 [:article.blog-item-card.card.h-100.border-0
 				[:div.card-body
-				 [:p.blog-item-meta (format-fecha fecha)]
+				 [:p.blog-item-meta (format-fecha fecha (date-locale request))]
 				 [:h2.blog-item-title (str (i18n/tr request :blog/photo-label) " #" id)]
 				 [:div.blog-item-actions
 					[:a.btn.btn-sm.btn-dark.rounded-pill.px-3
@@ -292,10 +325,77 @@
 		[:div.blog-empty (i18n/tr request :blog/no-workshops)])
 	 (i18n/tr request :blog/workshops-label)))
 
+;; ──────────────────────────────────────────────────────────
+;; Markdown rendering
+;; ──────────────────────────────────────────────────────────
+(defn- render-md [text]
+  (try
+    (md/md-to-html-string (str (or text "")))
+    (catch Exception _ (str (or text "")))))
+
+;; ──────────────────────────────────────────────────────────
+;; Media embed helpers — detect YouTube / Vimeo from links
+;; ──────────────────────────────────────────────────────────
+(def ^:private youtube-re #"(?:https?://)?(?:www\.)?(?:youtube\.com/watch\?v=|youtu\.be/)([a-zA-Z0-9_-]{11})")
+(def ^:private vimeo-re   #"(?:https?://)?(?:www\.)?vimeo\.com/(\d+)")
+
+(defn- extract-youtube-id [url]
+  (when-let [m (re-find youtube-re (str url))]
+    (last m)))
+
+(defn- extract-vimeo-id [url]
+  (when-let [m (re-find vimeo-re (str url))]
+    (last m)))
+
+(defn- media-embed [url]
+  (let [s (str/trim (str url))]
+    (when-not (str/blank? s)
+      (if-let [yt-id (extract-youtube-id s)]
+        [:div.ratio.ratio-16x9.my-3
+         [:iframe {:src (str "https://www.youtube.com/embed/" yt-id)
+                   :frameborder "0"
+                   :allow "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                   :allowfullscreen true}]]
+        (if-let [v-id (extract-vimeo-id s)]
+          [:div.ratio.ratio-16x9.my-3
+           [:iframe {:src (str "https://player.vimeo.com/video/" v-id)
+                     :frameborder "0"
+                     :allow "autoplay; fullscreen; picture-in-picture"
+                     :allowfullscreen true}]]
+          [:a.ride-link {:href s :target "_blank" :rel "noopener noreferrer"}
+           (str "🔗 " s)])))))
+
+;; ──────────────────────────────────────────────────────────
+;; Social sharing
+;; ──────────────────────────────────────────────────────────
+(defn- share-url [service title url]
+  (let [encoded-title (java.net.URLEncoder/encode title "UTF-8")
+        encoded-url   (java.net.URLEncoder/encode url "UTF-8")]
+    (case service
+      :twitter  (str "https://twitter.com/intent/tweet?text=" encoded-title "&url=" encoded-url)
+      :facebook (str "https://www.facebook.com/sharer/sharer.php?u=" encoded-url)
+      :whatsapp (str "https://api.whatsapp.com/send?text=" encoded-title "%20" encoded-url))))
+
+(defn- sharing-section [request title url]
+  (let [page-url (str (or (:public-url crud/config) (:base-url crud/config) "http://localhost:3000/") url)]
+    [:div.d-flex.flex-wrap.gap-2.mt-4.pt-3.border-top
+     [:span.small.text-muted.me-2.fw-bold (i18n/tr request :blog/share-label)]
+     [:a.btn.btn-sm.btn-outline-dark.rounded-pill.px-3
+      {:href (share-url :twitter title page-url) :target "_blank" :rel "noopener noreferrer"}
+      (i18n/tr request :blog/share-x)]
+     [:a.btn.btn-sm.btn-outline-primary.rounded-pill.px-3
+      {:href (share-url :facebook title page-url) :target "_blank" :rel "noopener noreferrer"}
+      (i18n/tr request :blog/share-facebook)]
+     [:a.btn.btn-sm.btn-success.rounded-pill.px-3
+      {:href (share-url :whatsapp title page-url) :target "_blank" :rel "noopener noreferrer"}
+      (i18n/tr request :blog/share-whatsapp)]]))
+
 (defn adventure-detail-view
 	[request {:keys [adventure links]}]
 	(let [{:keys [id aventura fecha cmt_nombre leader_email enlace enlacev]} adventure
-			msg (or (get-in request [:params :msg]) (name (or (get-in request [:flash :blog-comment-status]) "")))]
+			msg (or (get-in request [:params :msg]) (name (or (get-in request [:flash :blog-comment-status]) "")))
+         site-url (fn [] (let [u (or (:public-url crud/config) (:base-url crud/config) "http://localhost:3000/")]
+                          (if (.endsWith u "/") (subs u 0 (dec (count u))) u)))]
 		(list
 		 [:style
 			"@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Fraunces:opsz,wght@9..144,600;9..144,700&display=swap');
@@ -305,7 +405,14 @@
 .ride-title{font-family:'Fraunces',serif;line-height:1.1;font-size:clamp(1.9rem,3vw,2.8rem);color:#f4fcff;margin-bottom:.45rem;}
 .ride-meta{font-size:.9rem;color:#cae8f4;}
 .ride-story-card{border-radius:14px;background:#fbfdff;box-shadow:0 10px 20px rgba(19,40,60,.08);}
-.ride-story-copy{white-space:pre-wrap;line-height:1.8;color:#2d4253;}
+.ride-story-copy{line-height:1.8;color:#2d4253;}
+.ride-story-copy p{margin-bottom:1rem;}
+.ride-story-copy h1,.ride-story-copy h2,.ride-story-copy h3{margin-top:1.5rem;margin-bottom:.6rem;font-weight:700;}
+.ride-story-copy img{max-width:100%;border-radius:12px;margin:1rem 0;}
+.ride-story-copy blockquote{border-left:4px solid #0d6efd;padding:.5rem 1rem;margin:1rem 0;background:#f8f9fa;border-radius:0 8px 8px 0;}
+.ride-story-copy pre{background:#1e293b;color:#e2e8f0;padding:1rem;border-radius:8px;overflow-x:auto;font-size:.9rem;}
+.ride-story-copy code{background:#f1f5f9;padding:.15rem .4rem;border-radius:4px;font-size:.9rem;}
+.ride-story-copy pre code{background:transparent;padding:0;}
 .ride-link{font-weight:700;text-decoration:none;color:#0b5e82;}
 .ride-link:hover{color:#084866;}
 .ride-list .list-group-item{border-color:#e7eef5;padding:1rem 1.1rem;}
@@ -313,7 +420,7 @@
 .ride-list-copy{margin:0;color:#5a6f80;line-height:1.6;}
 @media (max-width:576px){.ride-shell{padding:10px;}.ride-canvas{padding:15px;}.ride-banner{padding:22px 16px;}}"]
 
-		 [:nav {:aria-label "breadcrumb"}
+		 [:nav {:aria-label (i18n/tr request :common/breadcrumb)}
 			[:ol.breadcrumb.mb-4.bg-transparent
 				[:li.breadcrumb-item [:a {:href "/blog"} (i18n/tr request :blog/blog-label)]]
 				[:li.breadcrumb-item [:a {:href "/blog/stories"} (i18n/tr request :blog/stories-label)]]
@@ -326,21 +433,20 @@
 				 (i18n/tr request :blog/ride-story)]
 				[:h1.ride-title (str (i18n/tr request :blog/adventure-label) " #" id)]
 				[:p.ride-meta.mb-0
-				 (str (i18n/tr request :blog/date-label) ": " (format-fecha fecha)
+				 (str (i18n/tr request :blog/date-label) ": " (format-fecha fecha (date-locale request))
 						"  |  "
 						(i18n/tr request :blog/group-label) ": " (or cmt_nombre (i18n/tr request :blog/open-route)))]]
 
 			 [:div.ride-story-card.card.border-0.mb-4
 				[:div.card-body.p-4
-				 [:p.ride-story-copy.mb-0
-					(or aventura (i18n/tr request :blog/no-story-text))]
+				 [:div.ride-story-copy.mb-0
+				  (raw-string (render-md (or aventura (i18n/tr request :blog/no-story-text))))]
+				 (when (and enlacev (not (str/blank? enlacev)))
+				   (media-embed enlacev))
 				 [:div.d-flex.flex-wrap.gap-3.mt-3
 					(when (and enlace (not (str/blank? enlace)))
 						[:a.ride-link {:href enlace :target "_blank" :rel "noopener noreferrer"}
 						 (i18n/tr request :blog/primary-link)])
-					(when (and enlacev (not (str/blank? enlacev)))
-						[:a.ride-link {:href enlacev :target "_blank" :rel "noopener noreferrer"}
-						 (i18n/tr request :blog/video-extra-link)])
 					(when (and leader_email (not (str/blank? leader_email)))
 						[:span.badge.rounded-pill.text-bg-light.px-3.py-2
 						 (str (i18n/tr request :blog/leader-label) ": " leader_email)])]]]
@@ -381,7 +487,9 @@
 					[:button.btn.btn-dark.rounded-pill.px-4 {:type "submit"}
 					 (i18n/tr request :blog/comment-submit)]]]]]
 
-			 [:nav {:aria-label "breadcrumb"}
+			 (sharing-section request (str (or aventura "")) (str "/blog/adventure/" id))
+
+			 [:nav {:aria-label (i18n/tr request :common/breadcrumb)}
 				[:ol.breadcrumb.mt-4.bg-transparent
 					[:li.breadcrumb-item [:a {:href "/blog"} (i18n/tr request :blog/blog-label)]]
 					[:li.breadcrumb-item [:a {:href "/blog/stories"} (i18n/tr request :blog/stories-label)]]

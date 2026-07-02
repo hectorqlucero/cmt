@@ -27,35 +27,32 @@
  :common/confirm "Confirm"
  :common/select "Select"
  :common/required "Required"
+ :common/theme "Theme"
+ :common/default "Default"
 
- ;; [DEMO] Menu Categories — replace with your own navigation structure
- :menu/clients "Clients"
- :menu/properties "Properties"
- :menu/transactions "Transactions"
- :menu/financial "Financial"
- :menu/documents "Documents"
+ ;; [GENERIC] Menu items
+ :menu/home "Home"
+ :menu/ride-blog "Ride Blog"
+ :menu/travel-hub "Adventure Hub"
+ :menu/pending-comments "Comments"
  :menu/system "System"
  :menu/admin "Administration"
  :menu/logout "Logout"
  :menu/profile "Profile"
  :menu/settings "Settings"
+ :menu-category/travel "Travel"
+ :menu-category/users "Users"
+ :menu-category/system "System"
 
- ;; [DEMO] Entities — replace with your project's entity names
- :entity/alquileres "Rentals"
- :entity/ventas "Sales"
- :entity/propiedades "Properties"
- :entity/clientes "Clients"
- :entity/agentes "Agents"
- :entity/avaluos "Appraisals"
- :entity/comisiones "Commissions"
- :entity/contratos "Contracts"
- :entity/documentos "Documents"
- :entity/fiadores "Guarantors"
- :entity/pagos_renta "Rental Payments"
- :entity/pagos_ventas "Sale Payments"
- :entity/tramites "Procedures"
+ ;; [GENERIC] Entity labels
  :entity/bitacora "Audit Log"
  :entity/users "Users"
+ :entity/aventuras "Adventures"
+ :entity/videos "Videos"
+ :entity/talleres "Workshops"
+ :entity/fotos "Photos"
+ :entity/cmt "Ride Groups"
+ :entity/aventuras_link "Adventure Links"
 
  ;; [GENERIC] Form Labels
  :form/email "Email"
@@ -70,6 +67,11 @@
  :form/status "Status"
  :form/notes "Notes"
  :form/file "File"
+ :form/email-required "Email is required"
+ :form/password-required "Password is required"
+ :form/upload-image "Upload Image"
+ :form/add-new "Add new"
+ :form/field-required "{field} is required"
 
  ;; [GENERIC] Validation Messages
  :validation/required "{field} is required"
@@ -85,6 +87,7 @@
  ;; [GENERIC] Error Messages
  :error/general "An error occurred. Please try again"
  :error/not-found "Record not found"
+ :error/entity-not-found "Entity not found"
  :error/unauthorized "You don't have permission to perform this action"
  :error/forbidden "Access denied"
  :error/server "Server error"
@@ -93,6 +96,10 @@
  :error/invalid-data "Invalid data"
  :error/database "Database error"
  :error/file-upload "File upload error"
+ :error/access-denied "Access Denied"
+ :error/not-authorized "Not authorized to access {path}. Required level(s): {levels}. Your level: {level}"
+ :error/record-not-found "Record not found"
+ :error/unable-to-delete "Unable to delete record!"
 
  ;; [GENERIC] Success Messages
  :success/saved "Saved successfully"
@@ -155,27 +162,39 @@
  :subgrid/link-title "Link {title}"
  :subgrid/link-form-title "Link {title}"
  :subgrid/no-available-records "No records available to link"
- :subgrid/select-records "Select records to link"
+   :subgrid/select-records "Select records to link"
+   :subgrid/rel-11 "1:1 Relation"
+   :subgrid/rel-1n "1:N Relation"
+   :subgrid/rel-nm "M:N Relation"
  :grid/no-records "No records found"
  :confirm/unlink "Unlink?"
  :pivot/edit-attributes "Edit attributes"
  :pivot/no-attributes "No pivot attributes to edit."
  :pivot/edit-title "Edit {title}"
 
- ;; [DEMO] Business Logic (Alquileres example) — replace with your own domain logic
- :alquiler/duration "Duration"
- :alquiler/initial-total "Initial Total"
- :alquiler/monthly-payment "Monthly Payment"
- :alquiler/deposit "Deposit"
- :alquiler/active "Active"
- :alquiler/expired "Expired"
- :alquiler/canceled "Canceled"
+
 
  ;; [GENERIC] Language Selector
  :lang/select "Select language"
  :lang/spanish "Español"
  :lang/english "English"
+ :grid/page-info "Page {page} of {total-pages} ({total} records)"
+  :grid/confirm-delete "Are you sure?"
+  :grid/records "records"
  :common/clear "Clear"
+ :common/toggle-navigation "Toggle navigation"
+ :common/breadcrumb "Breadcrumb"
+ :common/na "N/A"
+ :common/placeholder-number "0"
+ :common/placeholder-decimal "0.00"
+ :common/seo-default "Explore adventures on {site}"
+ :common/go-back-link "← Go Back"
+ :common/new-entity "New {title}"
+ :common/edit-entity "Edit {title}"
+ :common/copyright "Copyright ©"
+:common/all-rights-reserved "All rights reserved"
+:common/error-404 "Error 404"
+:common/go-back "Go back"
 
  ;; [GENERIC] Blog
  :blog/title "Ride Blog"
@@ -232,7 +251,21 @@
  :blog/photos-page-subtitle "Photo links ordered from newest to oldest."
  :blog/workshops-page-title "All trusted workshops"
  :blog/workshops-page-subtitle "Complete workshop directory for your trips."
- :blog/adventure-not-found "Adventure not found"
+  :blog/adventure-not-found "Adventure not found"
+  :blog/share-label "Share:"
+   :blog/view-all "View all"
+   :blog/blog-label "Blog"
+   :blog/stories-label "Stories"
+   :blog/videos-label "Videos"
+   :blog/photos-label "Photos"
+   :blog/workshops-label "Workshops"
+   :blog/share-x "X"
+   :blog/na-date "N/A"
+   :blog/rss-author "Anonymous"
+   :blog/share-facebook "Facebook"
+   :blog/share-whatsapp "WhatsApp"
+   :blog/translate "Translate"
+   :blog/translate-title "Open this page in Google Translate (English)"
 
  ;; [GENERIC] Comments moderation
  :comments/moderation-title "Comments moderation"
@@ -242,7 +275,9 @@
  :comments/reply "Reply"
  :comments/reply-placeholder "Write your reply for the commenter..."
  :comments/status-pending "Pending"
- :comments/status-approved "Approved"
+  :comments/status-approved "Approved"
+  :comments/filter-all "All status"
+  :comments/no-date "-"
 
  ;; [GENERIC] Travel Hub (admin helper)
  :travel-hub/kicker "Simplified panel"
@@ -264,4 +299,14 @@
  :travel-hub/no-adventures "No adventures found."
  :travel-hub/date "Date"
  :travel-hub/story "Story"
- :travel-hub/group "Group"}
+    :travel-hub/group "Group"
+   :travel-hub/no-date "-"
+
+ ;; [GENERIC] Config reload
+ :config/reload-title "Configuration Reloaded"
+ :config/reload-desc "All entity configurations have been reloaded from disk."
+ :config/reload-edn "Entity EDN files: reloaded"
+ :config/reload-hooks "Hook functions: reloaded"
+ :config/reload-cache "Config cache: cleared"
+ :config/reload-failed "Reload Failed"
+ :config/reload-error "{error}"}

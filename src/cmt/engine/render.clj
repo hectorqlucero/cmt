@@ -185,13 +185,17 @@
                          :value field-value})
 
       :textarea
-      (form/build-field {:label label
-                         :type "textarea"
-                         :id (name id)
-                         :name (name id)
-                         :required required?
-                         :placeholder (or placeholder (str label "..."))
-                         :value field-value})
+      (let [base-args {:label label
+                       :type "textarea"
+                       :id (name id)
+                       :name (name id)
+                       :required required?
+                       :placeholder (or placeholder (str label "..."))
+                       :value field-value}
+            md-args (if (:md-editor? field)
+                      (assoc base-args :data-md-editor "true")
+                      base-args)]
+        (form/build-field md-args))
 
       :select
       (form/build-field {:label label
@@ -425,10 +429,14 @@
 
 (defn render-not-authorized
   "Renders a not authorized message."
-  [entity user-level]
+  [entity user-level & [request]]
   (let [config (config/get-entity-config entity)
         required-rights (:rights config)]
-    (render-error
-     (str "Not authorized to access " (:title config)
-          "! Required level(s): " (clojure.string/join ", " required-rights)
-          ". Your level: " user-level))))
+    (if request
+      (render-error (i18n/tr request :error/not-authorized {:path (:title config)
+                                                            :levels (clojure.string/join ", " required-rights)
+                                                            :level user-level}))
+      (render-error
+       (str "Not authorized to access " (:title config)
+            "! Required level(s): " (clojure.string/join ", " required-rights)
+            ". Your level: " user-level)))))

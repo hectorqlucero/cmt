@@ -9,14 +9,16 @@
  :title "Aventuras"  ;; Edit this to your preference
  :table "aventuras"
  :connection :default
- :rights ["U" "A" "S"]  ;; User levels: U=User, A=Admin, S=System
+ :rights ["A" "S"]  ;; User levels: U=User, A=Admin, S=System
  :mode :parameter-driven
  :menu-category :travel
  :menu-order 20
+:menu-icon "bi bi-compass"
+:menu-category-icon "bi bi-compass"
 
  ;; Fields auto-detected from database schema
  :fields [{:id :id :label "ID" :type :hidden}
-          {:id :aventura :label "Historia" :type :textarea :placeholder "Describe la aventura..."}
+          {:id :aventura :label "Historia" :type :textarea :md-editor? true :placeholder "Describe la aventura usando **Markdown**..."}
           {:id :fecha :label "Fecha" :type :date}
           {:id :leader_email :label "Email del líder" :type :email :placeholder "user@example.com"}
           {:id :enlace :label "Enlace" :type :textarea :placeholder "Enlace..."}
@@ -36,19 +38,18 @@
  ;; Available actions
  :actions {:new true :edit true :delete true}
 
- ;; Enable audit trail (tracks who created/modified and when)
- ;; Uncomment to enable:
- ;; :audit? true
+  ;; Enable audit trail (tracks who created/modified and when)
+  :audit? true
 
- ;; Lifecycle hooks for business logic
- ;; Senior developer: Implement these in src/cmt/hooks/aventuras.clj
- ;; Uncomment and implement as needed:
- ;; :hooks {:before-load :cmt.hooks.aventuras/before-load
- ;;         :after-load :cmt.hooks.aventuras/after-load
- ;;         :before-save :cmt.hooks.aventuras/before-save
- ;;         :after-save :cmt.hooks.aventuras/after-save
- ;;         :before-delete :cmt.hooks.aventuras/before-delete
- ;;         :after-delete :cmt.hooks.aventuras/after-delete}
+  ;; Lifecycle hooks for business logic
+  ;; Senior developer: Implement these in src/cmt/hooks/aventuras.clj
+  ;; Uncomment and implement as needed:
+  ;; :hooks {:before-load :cmt.hooks.aventuras/before-load
+  ;;         :after-load :cmt.hooks.aventuras/after-load
+  ;;         :before-save :cmt.hooks.aventuras/before-save
+  ;;         :after-save :cmt.hooks.aventuras/after-save
+  ;;         :before-delete :cmt.hooks.aventuras/before-delete
+  ;;         :after-delete :cmt.hooks.aventuras/after-delete}
 
  ;; Subgrids for related tables (auto-detected)
  :subgrids [{:entity :aventuras_link

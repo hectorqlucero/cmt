@@ -13,6 +13,8 @@
   (GET "/blog/workshops" params [] (blog-controller/blog-workshops params))
   (GET "/blog/adventure/:id" [id :as params] (blog-controller/blog-adventure (assoc-in params [:params :id] id)))
   (POST "/blog/adventure/:id/comment" [id :as params] (blog-controller/blog-add-comment (assoc-in params [:params :id] id)))
+  (GET "/feed.xml" params [] (blog-controller/blog-rss params))
+  (GET "/sitemap.xml" params [] (blog-controller/sitemap params))
   (GET "/home/login" params [] (home-controller/login params))
   (POST "/home/login" params [] (home-controller/login-user params))
   (GET "/home/logoff" params [] (home-controller/logoff-user params)))

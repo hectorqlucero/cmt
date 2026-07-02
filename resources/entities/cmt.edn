@@ -9,11 +9,12 @@
  :title "Grupos de Ruta"  ;; Edit this to your preference
  :table "cmt"
  :connection :default
- :rights ["U" "A" "S"]  ;; User levels: U=User, A=Admin, S=System
+ :rights ["A" "S"]  ;; User levels: U=User, A=Admin, S=System
  :mode :parameter-driven
  :menu-category :travel
- :menu-order 10
- 
+:menu-order 10
+:menu-icon "bi bi-people"
+
  ;; Fields auto-detected from database schema
  :fields [
           {:id :id :label "ID" :type :hidden}
@@ -29,9 +30,8 @@
  ;; Available actions
  :actions {:new true :edit true :delete true}
  
- ;; Enable audit trail (tracks who created/modified and when)
- ;; Uncomment to enable:
- ;; :audit? true
+  ;; Enable audit trail (tracks who created/modified and when)
+  :audit? true
  
  ;; Lifecycle hooks for business logic
  ;; Senior developer: Implement these in src/cmt/hooks/cmt.clj

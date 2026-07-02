@@ -9,7 +9,7 @@
  :title "Enlaces de Aventura"  ;; Edit this to your preference
  :table "aventuras_link"
  :connection :default
- :rights ["U" "A" "S"]  ;; User levels: U=User, A=Admin, S=System
+ :rights ["A" "S"]  ;; User levels: U=User, A=Admin, S=System
  :mode :parameter-driven
  :menu-hidden? true
  
@@ -35,9 +35,8 @@
  ;; Available actions
  :actions {:new true :edit true :delete true}
  
- ;; Enable audit trail (tracks who created/modified and when)
- ;; Uncomment to enable:
- ;; :audit? true
+  ;; Enable audit trail (tracks who created/modified and when)
+  :audit? true
  
  ;; Lifecycle hooks for business logic
  ;; Senior developer: Implement these in src/cmt/hooks/aventuras_link.clj

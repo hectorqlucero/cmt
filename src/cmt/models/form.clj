@@ -428,38 +428,39 @@
                :action href
                :class "needs-validation"
                :novalidate false}
-        (csrf-field)
-        fields
-        [:div.d-flex.gap-2.justify-content-end.mt-4
-         (cond
-           (and (sequential? buttons) (not (vector? (first buttons))))
-           (doall buttons)
-           (sequential? buttons)
-           (doall buttons)
-           :else
-           buttons)]]
-       ;; Full card for standalone page
-       (list
-        [:div.d-flex.justify-content-center.align-items-center.w-100
-         {:style "min-height: 45vh;"}
-         [:div.card.shadow-lg.w-100
-          {:style "max-width: 540px;"}
-          (when title
-            [:div.card-header
-             [:h4.mb-0.fw-bold.text-center title]])
-          [:div.card-body.p-4
-           [:form {:method "POST"
-                   :enctype "multipart/form-data"
-                   :action href
-                   :class "needs-validation"
-                   :novalidate true}
-            (csrf-field)
-            fields
-            [:div.d-flex.gap-2.justify-content-end.mt-4
-             (cond
-               (and (sequential? buttons) (not (vector? (first buttons))))
-               (doall buttons)
-               (sequential? buttons)
-               (doall buttons)
-               :else
-               buttons)]]]]])))))
+         (csrf-field)
+          fields
+          [:div.form-actions
+          (cond
+            (and (sequential? buttons) (not (vector? (first buttons))))
+            (doall buttons)
+            (sequential? buttons)
+            (doall buttons)
+            :else
+            buttons)]]
+        ;; Full card for standalone page
+        (list
+         [:div.d-flex.justify-content-center.align-items-center.w-100
+          {:style "min-height: 45vh;"}
+          [:div.card.shadow-lg.w-100.form-card
+           {:style "max-width: min(540px, calc(100vw - 2rem));"}
+           (when title
+             [:div.card-header
+              [:h4.mb-0.fw-bold.text-center title]])
+           [:div.card-body.p-4
+            [:form {:method "POST"
+                    :enctype "multipart/form-data"
+                    :action href
+                    :class "needs-validation"
+                    :novalidate true}
+             (csrf-field)
+             fields
+             [:div.form-actions
+              (cond
+                (and (sequential? buttons) (not (vector? (first buttons))))
+                (doall buttons)
+                (sequential? buttons)
+                (doall buttons)
+                :else
+                buttons)]]]]])))))
+

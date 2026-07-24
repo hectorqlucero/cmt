@@ -147,11 +147,13 @@
   [request rows href fields & [args]]
   (let [{:keys [edit delete]} args]
     [:tbody
-     (if (empty? rows)
-       [:tr
-        [:td.text-center.text-muted.py-4
-         {:colspan (+ (count fields) 1)}
-         [:em (i18n/tr request :grid/no-records "No records found")]]]
+       (if (empty? rows)
+        [:tr
+         [:td.text-center.text-muted.py-5
+          {:colspan (+ (count fields) 1)}
+          [:div.grid-empty-state
+           [:i.bi.bi-inbox]
+           [:p (i18n/tr request :grid/no-records "No records found")]]]]
        (for [row rows]
          [:tr
           (for [field fields]
@@ -161,20 +163,52 @@
            {:style "width:1%; white-space:nowrap; padding-left:0.25rem; padding-right:0.25rem;"}
            [:div.d-flex.justify-content-center.align-items-center.gap-1
             (when edit
-              [:a.btn.btn-warning.btn-sm.fw-semibold.shadow-sm.rounded-pill
-               {:href (str href "/edit-form/" (:id row)) :role "button"}
-               [:i.bi.bi-pencil.me-1]
-               (i18n/tr request :common/edit)])
-            (when delete
-              [:form {:method "POST"
-                      :action (str href "/delete/" (:id row))
-                      :style "display:inline"
-                      :onsubmit "return confirm('Are you sure?')"}
-               (csrf-field)
-               [:button.btn.btn-danger.btn-sm.fw-semibold.shadow-sm.rounded-pill
-                {:type "submit"}
-                [:i.bi.bi-trash.me-1]
-                (i18n/tr request :common/delete)]])]]]))]))
+              [:a.btn.btn-outline-primary.btn-sm.fw-semibold
+                {:href (str href "/edit-form/" (:id row)) :role "button"}
+                [:i.bi.bi-pencil.me-1]
+                (i18n/tr request :common/edit)])
+             (when delete
+               [:form {:method "POST"
+                       :action (str href "/delete/" (:id row))
+                       :style "display:inline"
+                       :onsubmit "return confirm('Are you sure?')"}
+                (csrf-field)
+                 [:button.btn.btn-outline-danger.btn-sm.fw-semibold
+                 {:type "submit"}
+                 [:i.bi.bi-trash.me-1]
+                 (i18n/tr request :common/delete)]])]]]))]))
+
+(defn- render-record-card
+  "Renders a single record as a card."
+  [request row fields href actions]
+  (let [{:keys [edit delete]} actions
+        primary-field (first fields)
+        primary-value (when primary-field ((key primary-field) row))]
+    [:div.card.h-100.grid-record-card
+     [:div.card-body
+      [:div.d-flex.justify-content-between.align-items-start.mb-2
+       [:h6.card-title.fw-bold.mb-0 (or primary-value (str "#" (:id row)))]
+       [:span.badge.bg-secondary.rounded-pill (str "#" (:id row))]]
+      (for [field (rest fields)]
+        [:div.mt-2
+         [:small.text-muted.fw-semibold (val field)]
+         [:div.text-truncate ((key field) row)]])
+      [:div.d-flex.gap-2.mt-3.pt-2.border-top
+       (when edit
+         [:a.btn.btn-sm.btn-outline-primary.fw-semibold
+          {:href (str href "/edit-form/" (:id row)) :role "button"}
+          [:i.bi.bi-pencil.me-1]
+          (i18n/tr request :common/edit)])
+       (when delete
+         [:form {:method "POST"
+                 :action (str href "/delete/" (:id row))
+                 :style "display:inline"
+                 :onsubmit "return confirm('Are you sure?')"}
+          (csrf-field)
+          [:button.btn.btn-sm.btn-outline-danger.fw-semibold
+           {:type "submit"}
+           [:i.bi.bi-trash.me-1]
+           (i18n/tr request :common/delete)]])]]]))
 
 ;; =============================================================================
 ;; Full grid (card + table + pagination + search)
@@ -193,19 +227,40 @@
    - page-info: Optional map with :page, :per-page, :total, :total-pages, :sort-by, :sort-order
    - current-params: Optional map of current query params (search, sort, etc.)"
   [request title rows table-id fields href & [args page-info current-params]]
-  (let [args (or args {})]
-    [:div.card.shadow.mb-4
-     [:div.card-body.bg-gradient.bg-primary.text-white.rounded-top
-      [:h4.mb-0.fw-bold title]]
-     [:div.p-3.bg-white.rounded-bottom
-      (search-form request href (or current-params {}))
-      [:div.table-responsive
-       [:table.table.table-hover.table-bordered.table-striped.table-sm.compact.align-middle.w-100
-        {:id table-id}
-        (build-grid-head request href fields args page-info current-params)
-        (build-grid-body request rows href fields args)]]
-      (when page-info
-        (pagination-bar request page-info href (or current-params {})))]]))
+  (let [args (or args {})
+        total (or (:total page-info) (count rows))]
+    (if (and (<= total 12) (not page-info))
+      ;; Card view for small datasets
+      [:div.card.shadow.mb-4
+       [:div.card-body.bg-gradient.bg-primary.text-white.rounded-top
+        [:div.d-flex.align-items-center
+         [:h4.mb-0.fw-bold title]
+         [:span.grid-record-count (str total)]]]
+       [:div.p-3.bg-white.rounded-bottom
+        (search-form request href (or current-params {}))
+        (if (empty? rows)
+          [:div.grid-empty-state
+           [:i.bi.bi-inbox]
+           [:p (i18n/tr request :grid/no-records "No records found")]]
+          [:div.row.g-3
+           (for [row rows]
+             [:div.col-sm-6.col-lg-4.col-xl-3
+              (render-record-card request row fields href args)])])]]
+      ;; Table view for larger datasets
+      [:div.card.shadow.mb-4
+       [:div.card-body.bg-gradient.bg-primary.text-white.rounded-top
+        [:div.d-flex.align-items-center
+         [:h4.mb-0.fw-bold title]
+         [:span.grid-record-count (str total)]]]
+       [:div.p-3.bg-white.rounded-bottom
+        (search-form request href (or current-params {}))
+        [:div.table-responsive
+         [:table.table.table-hover.table-bordered.table-striped.table-sm.compact.align-middle.w-100
+          {:id table-id}
+          (build-grid-head request href fields args page-info current-params)
+          (build-grid-body request rows href fields args)]]
+        (when page-info
+          (pagination-bar request page-info href (or current-params {})))]])))
 
 ;; =============================================================================
 ;; Dashboard (read-only table, no actions)
@@ -229,9 +284,11 @@
       [:tbody
        (if (empty? rows)
          [:tr
-          [:td.text-center.text-muted.py-4
-           {:colspan (count fields)}
-           [:em (i18n/tr request :grid/no-records "No records found")]]]
+          [:td.text-center.text-muted.py-5
+            {:colspan (count fields)}
+            [:div.grid-empty-state
+             [:i.bi.bi-inbox]
+             [:p (i18n/tr request :grid/no-records "No records found")]]]]
          (for [row rows]
            [:tr
             (for [field fields]
@@ -244,30 +301,57 @@
 
 (defn build-grid-with-custom-new
   "Builds a grid with a custom new-record URL.
-   Used by render-subgrid for subgrid forms."
+   Used by render-subgrid for subgrid forms.
+   Uses card view for small datasets (≤12 records) and table view for larger ones."
   [request title rows table-id fields href args custom-new-url]
-  (let [new? (:new args)]
-    [:div.card.shadow.mb-4
-     [:div.card-body.bg-gradient.bg-primary.text-white.rounded-top
-      [:h4.mb-0.fw-bold title]]
-     [:div.p-3.bg-white.rounded-bottom
-      [:div.table-responsive
-       [:table.table.table-hover.table-bordered.table-striped.table-sm.compact.align-middle.w-100
-        {:id table-id}
-        [:thead
-         [:tr
-          (for [field fields]
-            [:th.text-nowrap.text-uppercase.fw-semibold.px-2
-             (st/upper-case (val field))])
-          [:th.text-center.px-2
-           {:style "width:1%; white-space:nowrap; padding-left:0.25rem; padding-right:0.25rem;"}
-           [:div.d-flex.justify-content-center.align-items-center
-            (when new?
-              [:a.btn.btn-success.btn-sm.fw-semibold.shadow-sm
-               {:href custom-new-url :role "button"}
-               [:i.bi.bi-plus-lg.me-1]
-               (i18n/tr request :common/new)])]]]]
-        (build-grid-body request rows href fields args)]]]]))
+  (let [new? (:new args)
+        total (count rows)
+        actions (assoc args :new false)]
+    (if (<= total 12)
+      ;; Card view for small datasets
+      [:div.card.shadow.mb-4
+       [:div.card-body.bg-gradient.bg-primary.text-white.rounded-top
+        [:div.d-flex.align-items-center
+         [:h4.mb-0.fw-bold title]
+         [:span.grid-record-count (str total)]
+         (when new?
+           [:a.btn.btn-success.btn-sm.fw-bold.ms-auto
+            {:href custom-new-url :role "button"}
+            [:i.bi.bi-plus-lg.me-1]
+            (i18n/tr request :common/new)])]]
+       [:div.p-3.bg-white.rounded-bottom
+        (if (empty? rows)
+          [:div.grid-empty-state
+           [:i.bi.bi-inbox]
+           [:p (i18n/tr request :grid/no-records "No records found")]]
+          [:div.row.g-3
+           (for [row rows]
+             [:div.col-sm-6.col-lg-4.col-xl-3
+              (render-record-card request row fields href actions)])])]]
+      ;; Table view for larger datasets
+      [:div.card.shadow.mb-4
+       [:div.card-body.bg-gradient.bg-primary.text-white.rounded-top
+        [:div.d-flex.align-items-center
+         [:h4.mb-0.fw-bold title]
+         [:span.grid-record-count (str total)]]]
+       [:div.p-3.bg-white.rounded-bottom
+        [:div.table-responsive
+         [:table.table.table-hover.table-bordered.table-striped.table-sm.compact.align-middle.w-100
+          {:id table-id}
+          [:thead
+           [:tr
+            (for [field fields]
+              [:th.text-nowrap.text-uppercase.fw-semibold.px-2
+               (st/upper-case (val field))])
+            [:th.text-center.px-2
+             {:style "width:1%; white-space:nowrap; padding-left:0.25rem; padding-right:0.25rem;"}
+             [:div.d-flex.justify-content-center.align-items-center
+              (when new?
+                [:a.btn.btn-success.btn-sm.fw-bold.shadow-sm
+                 {:href custom-new-url :role "button"}
+                 [:i.bi.bi-plus-lg.me-1]
+                 (i18n/tr request :common/new)])]]]]
+         (build-grid-body request rows href fields args)]]]])))
 
 
 (comment

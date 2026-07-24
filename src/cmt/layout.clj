@@ -272,7 +272,7 @@
   (list
    [:link {:rel "stylesheet" :href "/vendor/bootstrap-icons.css"}]
    [:link {:rel "stylesheet" :href "/vendor/dropdown-scroll-fix.css"}]
-   [:link {:rel "stylesheet" :href "/css/tabgrid.css"}]
+   [:link {:rel "stylesheet" :href "/css/tabgrid.css?v=5"}]
    [:style ".dropdown-menu .active, .dropdown-menu .active:focus, .dropdown-menu .active:hover { background-color: var(--bs-primary, #0d6efd) !important; color: #fff !important; }
 .theme-quartz .dropdown-menu,
 .theme-superhero .dropdown-menu,

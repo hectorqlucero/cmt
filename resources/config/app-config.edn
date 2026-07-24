@@ -94,12 +94,15 @@
  ;; --- File Upload Settings ---
  :max-upload-mb 5
  :allowed-image-exts ["jpg" "jpeg" "png" "gif" "bmp" "webp"]
+ :allowed-upload-exts {:file ["jpg" "jpeg" "png" "gif" "bmp" "webp"]
+                       :pdf ["pdf"]
+                       :document ["doc" "docx" "txt" "odt"]}
 
  ;; --- Email Settings ---
- :email-host "smtp.fastmail.com" ; smtp.provider.com
+ :email-host "change_me" ; smtp.provider.com
  :email-port 465
- :email-user "hectorqlucero@fastmail.com" ; joeblo@server.com
- :email-from "hectorqlucero@fastmail.com"
- :email-notify-to "hectorqlucero@gmail.com"
- :email-passwd "h64k9rq89m7ba4ap" ; The email provider password
+ :email-user "change_me" ; joeblo@server.com
+ :email-from "change_me"
+ :email-notify-to "change_me"
+ :email-passwd "change_me" ; The email provider password
  :email-ssl true}

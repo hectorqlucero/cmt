@@ -304,7 +304,9 @@
          fields (config/get-form-fields entity subgrid-fk)
          entity-name (name entity)
          href (str "/admin/" entity-name "/save")
-         custom-form-fn (get-in config [:ui :form-fn])]
+          custom-form-fn (get-in config [:ui :form-fn])
+          form-title (str (if (:id row) (i18n/tr request :common/edit) (i18n/tr request :common/new))
+                          " " (if (keyword? (:title config)) (i18n/tr request (:title config)) (:title config)))]
      (if custom-form-fn
        (custom-form-fn entity row)
        (let [fk-hidden (when (and subgrid-fk (get row subgrid-fk))
@@ -344,7 +346,7 @@
                            (str cancel-base "?" cancel-q)
                            cancel-base)
              buttons (form/build-form-buttons {:cancel-url cancel-url})]
-        (form/form href all-elements buttons))))))
+        (form/form href all-elements buttons form-title))))))
 
 (defn- build-fields-map
   "Builds a field map for grid rendering from entity config."

@@ -78,6 +78,7 @@
 .blog-item-title{font-size:1.06rem;font-weight:700;color:#152c40;margin-bottom:.4rem;}
 .blog-item-copy{color:#42586a;line-height:1.62;margin-bottom:.85rem;}
 .blog-item-actions{display:flex;flex-wrap:wrap;gap:.45rem;}
+.blog-item-actions .btn{white-space:nowrap;}
 .blog-empty{padding:1rem 1.1rem;border:1px dashed #c6d8e7;border-radius:12px;background:#f9fcff;color:#5f7688;}
 @media (max-width:576px){.blog-list-shell{padding:10px;}.blog-list-canvas{padding:14px;}.blog-list-head{padding:.85rem .9rem;}}"]
 	 [:section.blog-list-shell
@@ -163,14 +164,15 @@
 .blog-home-title{font-family:'Fraunces',serif;font-size:clamp(2.2rem,4vw,3.6rem);line-height:1.02;margin:0 0 .7rem 0;color:#f7fdff;max-width:12ch;}
 .blog-home-subtitle{max-width:56ch;font-size:1.02rem;line-height:1.65;color:#d5edf7;margin:0 0 1rem 0;}
 .blog-home-actions{display:flex;flex-wrap:wrap;gap:.6rem;}
+.blog-home-shell .btn{white-space:nowrap;}
 .blog-home-visual{padding:18px 18px 18px 0;display:flex;align-items:stretch;height:100%;}
 .blog-home-frame{width:100%;min-height:320px;border-radius:22px;overflow:hidden;box-shadow:0 20px 38px rgba(5,20,34,.3);background:#0a2031;}
 .blog-home-image{width:100%;height:100%;min-height:320px;object-fit:cover;display:block;}
-.blog-stat{display:flex;flex-direction:column;gap:.18rem;min-width:0;text-decoration:none;padding:.92rem .95rem .85rem;border-radius:16px;border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.1);backdrop-filter:blur(8px);color:#f5fbfe;box-shadow:0 10px 20px rgba(2,18,31,.12);transition:transform .18s ease,background .18s ease,box-shadow .18s ease;flex:1 1 12rem;}
+.blog-stat{display:flex;flex-direction:row;align-items:center;gap:.5rem;min-width:0;text-decoration:none;padding:.72rem .95rem;border-radius:16px;border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.1);backdrop-filter:blur(8px);color:#f5fbfe;box-shadow:0 10px 20px rgba(2,18,31,.12);transition:transform .18s ease,background .18s ease,box-shadow .18s ease;flex:1 1 12rem;}
 .blog-stat:hover{transform:translateY(-2px);background:rgba(255,255,255,.16);box-shadow:0 14px 24px rgba(2,18,31,.16);color:#fff;}
 .blog-stat-label{font-size:.7rem;letter-spacing:.12em;text-transform:uppercase;font-weight:700;opacity:.82;}
-.blog-stat-value{font-size:1.12rem;font-weight:700;line-height:1.1;}
-.blog-stat-arrow{margin-top:.08rem;font-size:1rem;opacity:.9;}
+.blog-stat-value{font-size:1.12rem;font-weight:700;line-height:1.1;margin-right:auto;}
+.blog-stat-arrow{font-size:1rem;opacity:.9;flex-shrink:0;}
 @media (max-width:991.98px){.blog-home-copy{padding:26px 22px 0 22px;min-height:auto;}.blog-home-visual{padding:0 22px 22px 22px;}.blog-home-frame,.blog-home-image{min-height:240px;}.blog-stat{flex-basis:calc(50% - .3rem);}}
 @media (max-width:575.98px){.blog-home-shell{padding:10px;}.blog-home-canvas{padding:14px;}.blog-home-copy{padding:18px 16px 0 16px;}.blog-home-visual{padding:0 16px 16px 16px;}.blog-home-title{max-width:none;}.blog-stat{flex-basis:100%;}.blog-home-frame,.blog-home-image{min-height:200px;}}"]
 				 [:section.blog-home-shell.mb-5
@@ -190,26 +192,7 @@
 				     [:div.col-lg-5
 				      [:div.blog-home-visual
 				       [:div.blog-home-frame
-				        [:img.blog-home-image {:src (:url cover) :alt ""}]]]]]]]
-				  ;; Latest stories preview
-				  (when (seq adventures)
-				   [:section.mt-4
-				    [:div.d-flex.align-items-center.justify-content-between.mb-3
-				     [:h2.h4.fw-bold.mb-0 (i18n/tr request :blog/latest-ride-stories)]
-				     [:a.btn.btn-sm.btn-outline-dark.rounded-pill.px-3 {:href "/blog/stories"}
-				      (str (i18n/tr request :blog/view-all) " →")]]
-				    [:div.row.row-cols-1.row-cols-md-2.row-cols-lg-3.g-3
-				     (for [{:keys [id aventura fecha cmt_nombre leader_email]} (take 3 adventures)]
-				      [:div.col {:key (str "preview-" id)}
-				       [:article.blog-item-card.card.h-100.border-0
-				        [:div.card-body
-				         [:p.blog-item-meta
-				          (str (format-fecha fecha (date-locale request)) "  •  " (or cmt_nombre (i18n/tr request :blog/open-route)))]
-				         [:h3.h6.blog-item-title (card-title request {:id id :aventura aventura})]
-				         [:p.blog-item-copy (shorten aventura 200)]
-				         [:div.blog-item-actions
-				          [:a.btn.btn-sm.btn-dark.rounded-pill.px-3 {:href (str "/blog/adventure/" id)}
-				           (i18n/tr request :blog/read-full-story) " →"]]]]])]])])))
+				        [:img.blog-home-image {:src (:url cover) :alt ""}]]]]]]]])))
 (defn stories-list-view
 	[request {:keys [adventures page total total-pages per-page q]}]
 	(list-page-shell

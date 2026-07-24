@@ -61,21 +61,27 @@
 
 (defn render-navigator
   [request entity-name title fields all-rows selected-parent-id actions]
-  [:aside.ws-nav
-   [:div.ws-nav-header
-    [:div.ws-nav-title
-     [:span title]
-     [:span.ws-count-badge (count all-rows)]]
-    (when (:new actions)
-      [:a.ws-new-btn
-       {:href (str "/admin/" entity-name "/add-form")
-        :title (str (i18n/tr request :common/new) " " title)}
-       [:i.bi.bi-plus-lg]])]
+   [:aside.ws-nav
+    [:div.ws-nav-header
+     [:div.ws-nav-title
+      [:span.ws-nav-title-text title]
+      [:span.ws-count-badge (count all-rows)]]
+     [:div.ws-nav-header-actions
+      (when (:new actions)
+        [:a.ws-new-btn
+         {:href (str "/admin/" entity-name "/add-form")
+          :title (str (i18n/tr request :common/new) " " title)}
+         [:i.bi.bi-plus-lg]])
+      [:button.ws-nav-toggle.d-lg-none
+       {:type "button"
+        :onclick "this.closest('.ws-nav').classList.toggle('ws-nav-expanded')"}
+       [:i.bi.bi-list]]]]
    [:div.ws-nav-search
     [:div.ws-search-wrap
      [:i.bi.bi-search.ws-search-icon]
      [:input.ws-search-input
-      {:type "search" :disabled "disabled"
+      {:id "ws-nav-search-input"
+       :type "search"
        :placeholder (str (i18n/tr request :common/search) "...")}]]]
    [:ul.ws-record-list
     {:id (str entity-name "-record-list")}
@@ -126,16 +132,22 @@
   (if-not row
     [:div.ws-empty-state [:i.bi.bi-inbox] [:p (i18n/tr request :grid/no-records)]]
     (let [label (parent-display-label fields row nil)
-          rid   (get-record-id entity-name row)]
+          rid   (get-record-id entity-name row)
+          primary-fields (take 3 fields)
+          secondary-fields (drop 3 fields)]
       [:div.ws-record-header
-       [:div.ws-record-hero
+       ;; Dashboard-style header with key metrics
+       [:div.ws-record-hero.ws-dashboard-hero
         [:div.ws-hero-avatar (ws-initials label)]
         [:div.ws-hero-meta
          [:h2.ws-hero-name label]
-         [:span.ws-hero-id [:i.bi.bi-hash] rid [:span.ms-2.fw-normal.text-muted title]]]
+         [:span.ws-hero-id
+          [:i.bi.bi-hash.me-1 {:style "font-size:.6rem"}]
+          rid
+          [:span.ms-2.fw-normal.text-muted {:style "font-size:.7rem"} title]]]
         [:div.ws-hero-actions
          (when (:edit actions)
-           [:a.btn.btn-sm.btn-primary
+           [:a.btn.btn-sm.btn-outline-success
             {:href (str "/admin/" entity-name "/edit-form/" rid)}
             [:i.bi.bi-pencil.me-1] (i18n/tr request :common/edit)])
          (when (:delete actions)
@@ -146,9 +158,22 @@
             (csrf-field)
             [:button.btn.btn-sm.btn-outline-danger {:type "submit"}
              [:i.bi.bi-trash.me-1] (i18n/tr request :common/delete)]])]]
-       [:div.ws-fields-grid
-        (for [[field-id field-label] fields]
-          (render-field-pair entity-name field-id field-label row))]])))
+       ;; Primary fields as prominent cards
+       (when (seq primary-fields)
+         [:div.ws-primary-fields
+          (for [[field-id field-label] primary-fields]
+            [:div.ws-primary-field
+             [:span.ws-primary-field-label field-label]
+             [:span.ws-primary-field-value
+              (let [v (render-field-value (field-display-value entity-name field-id row))]
+                (if (or (nil? v) (= v ""))
+                  [:span.text-muted "—"]
+                  v))]])])
+       ;; Secondary fields in grid
+       (when (seq secondary-fields)
+         [:div.ws-fields-grid
+          (for [[field-id field-label] secondary-fields]
+            (render-field-pair entity-name field-id field-label row))])])))
 
 ;;; -- 1:1 pane --------------------------------------------------------
 
@@ -240,7 +265,7 @@
                                       :onclick (str "return confirm('" (i18n/tr request :confirm/delete) "')")}
                                      [:i.bi.bi-trash]]])]]])))))])
       [:div.text-center.p-4.text-muted
-       [:i.bi.bi-inbox {:style "font-size:1.5rem"}]
+         [:i.bi.bi-inbox {:style "font-size:1.5rem;opacity:0.5"}]
        [:p.mt-2 (i18n/tr request :grid/no-records)]])))
 
 (defn- render-otm-pane
@@ -380,20 +405,24 @@
            (let [sg-name (safe-id (name (:entity sg)))
                  pane-id (str entity-name "-" sg-name "-pane")
                  rel-type (:relationship-type sg)
-                 rel-label (case rel-type
-                             :one-to-one (i18n/tr request :subgrid/rel-11)
-                             :one-to-many (i18n/tr request :subgrid/rel-1n)
-                             :many-to-many (i18n/tr request :subgrid/rel-nm))
-                 cnt (:count sg)]
-             [:button
-              {:class (tab-cls rel-type idx)
-               :role "tab"
-               :data-pane (str "#" pane-id)}
-              [:span (:title sg)]
-              [:span.ws-tab-end
-               [:span.ws-tab-pill rel-label]
-               (when-let [c cnt]
-                 [:span.ws-tab-pill c])]]))
+                  rel-label (case rel-type
+                              :one-to-one (i18n/tr request :subgrid/rel-11-label)
+                              :one-to-many (i18n/tr request :subgrid/rel-1n-label)
+                              :many-to-many (i18n/tr request :subgrid/rel-nm-label))
+                  rel-icon (case rel-type
+                             :one-to-one "bi bi-person-badge"
+                             :one-to-many "bi bi-list-ul"
+                             :many-to-many "bi bi-link-45deg")
+                  cnt (:count sg)]
+              [:button
+               {:class (tab-cls rel-type idx)
+                :role "tab"
+                :data-pane (str "#" pane-id)}
+               [:i.me-1 {:class rel-icon}]
+               [:span (:title sg)]
+               [:span.ws-tab-end
+                (when-let [c cnt]
+                  [:span.ws-tab-pill c])]]))
          subgrids)))
 
 (defn- render-tab-panes
@@ -480,8 +509,15 @@
              [].forEach.call(i.closest('.ws-pane-card').querySelector('.subgrid-table').querySelectorAll('tbody tr'),function(r){r.style.display='';});
            });
          }
-       });
-       [].forEach.call(document.querySelectorAll('.subgrid-table'),function(t){
+        });
+        var ni=document.getElementById('ws-nav-search-input');
+        if(ni){ni.addEventListener('input',function(){
+          var q=this.value.toLowerCase().trim();
+          [].forEach.call(document.querySelectorAll('.ws-record-item'),function(li){
+            li.style.display=(li.textContent.toLowerCase().indexOf(q)>-1)?'':'none';
+          });
+        });}
+        [].forEach.call(document.querySelectorAll('.subgrid-table'),function(t){
          var hs=t.querySelectorAll('th.subgrid-sortable');
          [].forEach.call(hs,function(h){h.addEventListener('click',function(){
            var c=this.cellIndex,d=this.getAttribute('data-dir')||'asc';d=d==='asc'?'desc':'asc';
@@ -501,9 +537,21 @@
 (defn render-accordion-content
   "Renders workspace tab content."
   [request entity-name title fields rows actions subgrids selected-parent-id]
-  (let [parent-row (first rows)]
+  (let [parent-row (first rows)
+        relationship-count (count subgrids)]
     [:div.ws-main
      (render-record-header request entity-name title fields parent-row actions)
+     ;; Status bar with relationship count
+     (when (pos? relationship-count)
+       (let [total (reduce + (map #(or (:count %) 0) subgrids))]
+         [:div.ws-status-bar
+          [:div.ws-status-item
+           [:i.bi.bi-diagram-3.me-1]
+           [:span (i18n/tr request :subgrid/relationships {:count relationship-count})]]
+           (when (pos? total)
+             [:div.ws-status-item
+              [:i.bi.bi-table.me-1]
+              [:span (i18n/tr request :subgrid/total-records {:count total})]])]))
      (when (seq subgrids)
        [:div.ws-tabs-container
         (render-tab-strip request entity-name subgrids)
@@ -555,11 +603,17 @@
         selected-parent-id (or (some-> (get-in request [:params :id]) str)
                                (when first-row
                                  (str (get-record-id entity-name first-row))))]
-    [:div.tabgrid-container
-     {:id                      (str entity-name "-tabgrid")
-      :data-entity             entity-name
-      :data-selected-parent-id (or selected-parent-id "")}
-     [:div.ws-layout
-      (render-navigator request entity-name title fields
-                        all-rows selected-parent-id actions)
-      (render-accordion-content request entity-name title fields rows actions subgrids selected-parent-id)]]))
+     [:div.tabgrid-container
+      {:id                      (str entity-name "-tabgrid")
+       :data-entity             entity-name
+       :data-selected-parent-id (or selected-parent-id "")}
+      ;; Breadcrumb navigation
+      [:nav.breadcrumb-nav
+       [:ol.breadcrumb.mb-0
+        [:li.breadcrumb-item
+         [:a {:href "/"} (i18n/tr request :breadcrumb/home)]]
+        [:li.breadcrumb-item.active {:aria-current "page"} title]]]
+      [:div.ws-layout
+       (render-navigator request entity-name title fields
+                         all-rows selected-parent-id actions)
+       (render-accordion-content request entity-name title fields rows actions subgrids selected-parent-id)]]))

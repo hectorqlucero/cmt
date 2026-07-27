@@ -91,7 +91,7 @@
       sql-with-dates)))
 
 (defn parse-migration-number
-  "Extract migration number from filename (e.g., '003' from '003-cgen.sqlite.up.sql')"
+  "Extract migration number from filename (e.g., '003' from '003-cmt.sqlite.up.sql')"
   [filename]
   (when-let [match (re-find #"^(\d+)-" filename)]
     (second match)))

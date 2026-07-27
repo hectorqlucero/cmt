@@ -72,6 +72,8 @@
  :form/upload-image "Upload Image"
  :form/add-new "Add new"
  :form/field-required "{field} is required"
+ :form/submit "Save"
+ :form/cancel "Cancel"
 
  ;; [GENERIC] Validation Messages
  :validation/required "{field} is required"
@@ -330,4 +332,19 @@
  :config/reload-hooks "Hook functions: reloaded"
  :config/reload-cache "Config cache: cleared"
  :config/reload-failed "Reload Failed"
- :config/reload-error "{error}"}
+ :config/reload-error "{error}"
+
+ ;; [GENERIC] Framework UI keys
+ :common/print "Print"
+ :grid/page-of "Page {page} of {total-pages} ({total} records)"
+ :subgrid/search "Filter..."
+ :subgrid/clear-filter "Clear filter"
+ :subgrid/has-record "1 record"
+ :subgrid/no-record "No record"
+ :subgrid/show-all "Show all"
+ :subgrid/showing-n "Showing {n} of {total}"
+ :tabgrid/record-list "Records"
+ :tabgrid/total-records "records"
+ :tabgrid/select-record "Select a record to view details."
+ :tabgrid/no-record-selected "Select a record to view details."
+ :tabgrid/select-hint "Choose a record from the list on the left."}

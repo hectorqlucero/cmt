@@ -1,6 +1,5 @@
 (ns cmt.models.form
   (:require
-   [clojure.java.io :as io]
    [clojure.string :as str]
    [cmt.i18n.core :as i18n]
    [cmt.models.crud :refer [config]]
@@ -8,44 +7,57 @@
 
 (defn password-form
   "Renders a professional password change form with Bootstrap 5 styling"
-  [title]
+  [title & {:keys [user-email email-readonly?]}]
   (list
    [:div.container.d-flex.justify-content-center.align-items-center
     {:style "min-height: 80vh;"}
-    [:div.card.shadow-lg.w-100
-     {:style "max-width: 420px;"}
-     [:div.card-header.bg-primary.text-white.text-center
-      [:h4.mb-0.fw-bold title]]
-     [:div.card-body.p-4
-      [:form {:method "POST"
-              :action "/change/password"
-              :class "needs-validation"
-              :novalidate true}
+     [:div.card.shadow-lg.w-100
+      {:style "max-width: min(420px, calc(100vw - 2rem));"}
+      [:div.card-header.bg-primary.text-white.text-center
+       [:h4.mb-0.fw-bold title]]
+      [:div.card-body.p-4
+       [:form {:method "POST"
+               :action "/change/password"
+               :class "needs-validation"
+               :novalidate true}
        (csrf-field)
        [:div.mb-3
         [:label.form-label.fw-semibold {:for "email"}
-         [:i.bi.bi-envelope.me-2] (i18n/tr nil :form/email)]
+         [:i.bi.bi-envelope.me-2] (i18n/tr :form/email)]
         [:input.form-control.form-control-lg
-         {:id "email"
-          :name "email"
-          :type "email"
-          :placeholder (i18n/tr nil :form/email)
-          :required true
-          :autocomplete "username"}]]
+         (merge
+          {:id "email"
+           :name "email"
+           :type "email"
+           :placeholder (i18n/tr :form/email)
+           :required true
+           :autocomplete "username"}
+          (when user-email {:value user-email})
+          (when email-readonly? {:readonly true}))]]
        [:div.mb-4
         [:label.form-label.fw-semibold {:for "password"}
-         [:i.bi.bi-lock.me-2] (i18n/tr nil :form/password)]
+         [:i.bi.bi-lock.me-2] (i18n/tr :form/password)]
         [:input.form-control.form-control-lg
          {:id "password"
           :name "password"
           :type "password"
-          :placeholder (i18n/tr nil :form/password)
+          :placeholder (i18n/tr :form/password)
+          :required true
+          :autocomplete "new-password"}]]
+       [:div.mb-4
+        [:label.form-label.fw-semibold {:for "confirm-password"}
+         [:i.bi.bi-lock.me-2] (i18n/tr :form/confirm-password)]
+        [:input.form-control.form-control-lg
+         {:id "confirm-password"
+          :name "confirm-password"
+          :type "password"
+          :placeholder (i18n/tr :form/confirm-password)
           :required true
           :autocomplete "new-password"}]]
        [:div.d-flex.gap-2.justify-content-end.mt-4
         [:button.btn.btn-success.btn-lg.fw-semibold
          {:type "submit"}
-         [:i.bi.bi-key.me-2] (i18n/tr nil :auth/change-password)]]]]]]))
+         [:i.bi.bi-key.me-2] (i18n/tr :auth/change-password)]]]]]]))
 
 (defn login-form
   "Renders a professional login form with Bootstrap 5 styling"
@@ -53,8 +65,8 @@
   (list
    [:div.container.d-flex.justify-content-center.align-items-center
     {:style "min-height: 80vh;"}
-    [:div.card.shadow-lg.w-100
-     {:style "max-width: 420px;"}
+     [:div.card.shadow-lg.w-100
+      {:style "max-width: min(420px, calc(100vw - 2rem));"}
      [:div.card-header.bg-primary.text-white.text-center
       [:h4.mb-0.fw-bold title]]
      [:div.card-body.p-4
@@ -65,81 +77,37 @@
        (csrf-field)
        [:div.mb-3
         [:label.form-label.fw-semibold {:for "username"}
-         [:i.bi.bi-person.me-2] (i18n/tr nil :form/email)]
+         [:i.bi.bi-person.me-2] (i18n/tr :form/email)]
         [:input.form-control.form-control-lg
          {:id "username"
           :name "username"
           :type "email"
           :required true
           :class "mandatory"
-          :oninvalid "this.setCustomValidity('Email is required...')"
+          :oninvalid (str "this.setCustomValidity('" (i18n/tr :validation/required {:field (i18n/tr :form/email)}) "')")
           :oninput "this.setCustomValidity('')"
-          :placeholder (i18n/tr nil :form/email)
+          :placeholder (i18n/tr :form/email)
           :autocomplete "username"}]]
        [:div.mb-4
         [:label.form-label.fw-semibold {:for "password"}
-         [:i.bi.bi-lock.me-2] (i18n/tr nil :form/password)]
+         [:i.bi.bi-lock.me-2] (i18n/tr :form/password)]
         [:input.form-control.form-control-lg
          {:id "password"
           :name "password"
           :required true
           :class "mandatory"
-          :oninvalid "this.setCustomValidity('Password is required...')"
+          :oninvalid (str "this.setCustomValidity('" (i18n/tr :validation/required {:field (i18n/tr :form/password)}) "')")
           :oninput "this.setCustomValidity('')"
-          :placeholder (i18n/tr nil :form/password)
+          :placeholder (i18n/tr :form/password)
           :type "password"
           :autocomplete "current-password"}]]
+       [:div.text-center.mb-3
+        [:a.small.text-decoration-none {:href "/home/forgot-password"}
+         (i18n/tr :auth/forgot-password)]]
        [:div.d-flex.gap-2.justify-content-end.mt-4
         [:button.btn.btn-success.btn-lg.fw-semibold
          {:type "submit"}
-         [:i.bi.bi-box-arrow-in-right.me-2] (i18n/tr nil :auth/login)]]]]]]))
-
-(defn build-image-field
-  "Renders an image upload field with preview functionality"
-  [row]
-  (list
-   [:div.mb-3
-    [:label.form-label.fw-semibold [:i.bi.bi-image.me-2] "Upload Image"]
-    [:input.form-control.form-control-lg
-     {:id "file"
-      :name "file"
-      :type "file"
-      :accept "image/*"}]]
-   [:div.text-center.mb-3
-    [:div.image-preview-container.d-inline-block.position-relative
-     (let [imagen (:imagen row)
-           uploads (:uploads config)
-           mtime (when (and imagen (not (str/blank? imagen)))
-                   (try (.lastModified (io/file (str uploads imagen))) (catch Exception _ nil)))
-           qs (when (and mtime (pos? (long mtime))) (str "?v=" mtime))
-           src (str (:path config) (or imagen "") (or qs ""))]
-       [:img#image1.img-thumbnail.shadow-sm.rounded
-        {:width "95"
-         :height "71"
-         :src src
-         :onError "this.src='/images/placeholder_profile.png'"}])
-     [:div.position-absolute.top-0.end-0.translate-middle
-      [:span.badge.bg-primary.rounded-pill
-       [:i.bi.bi-search-plus]]]]]))
-
-(defn build-image-field-script
-  "JavaScript for image preview functionality with smooth animations"
-  []
-  [:script
-   "
-    $(document).ready(function() {
-      $('img').click(function() {
-        var img = $(this);
-        if(img.width() < 500) {
-          img.animate({width: '500', height: '500'}, 1000);
-          img.addClass('shadow-lg');
-        } else {
-          img.animate({width: img.attr('width'), height: img.attr('height')}, 1000);
-          img.removeClass('shadow-lg');
-        }
-      });
-    });
-    "])
+         [:i.bi.bi-box-arrow-in-right.me-2] (i18n/tr :auth/login)]]]]]]))
 
 (defn build-field
   "Creates a professional form field with Bootstrap 5 styling and correct HTML5/Bootstrap5 field type rendering.
@@ -219,22 +187,23 @@
            select-el]))
 
       (and (= type "checkbox") (empty? (:options args)))
-      (let [checked-value (or (:checked-value args) "T")]
+      (let [checked-value (:checked-value args)
+            name* (:name args)
+            id* (or (:id args) name*)]
         [:div.mb-3
-         ;; Hidden fallback ensures the key is always present in params when unchecked
-         [:input {:type "hidden" :name (:name args) :value ""}]
          [:div.form-check
           [:input.form-check-input
-           {:type     "checkbox"
-            :id       (or (:id args) (:name args))
-            :name     (:name args)
-            :value    checked-value
-            :checked  (when (= (str (:value args)) (str checked-value)) true)
-            :required (:required args)
-            :disabled (:disabled args)
-            :style    "transform: scale(1.2);"}]
+           (merge {:type "checkbox"
+                   :id id*
+                   :name name*
+                   :checked (when checked-value
+                              (= (str (:value args)) (str checked-value)))
+                   :required (:required args)
+                   :disabled (:disabled args)
+                   :style "transform: scale(1.2);"}
+                  (when checked-value {:value checked-value}))]
           [:label.form-check-label.fw-medium.ms-2
-           {:for (or (:id args) (:name args))}
+           {:for id*}
            (:label args)]]])
 
       (or (= type "radio") (= type "checkbox"))
@@ -367,15 +336,15 @@
   [args]
   [:input.btn.btn-primary.btn-lg.fw-semibold.shadow-sm.rounded
    {:type (:type args)
-    :value (or (:value args) "Submit")}])
+    :value (or (:value args) (i18n/tr :form/submit))}])
 
 (defn build-secondary-input-button
   "Creates a secondary styled input button
-   Args: {:type string :value string}"
+    Args: {:type string :value string}"
   [args]
   [:input.btn.btn-outline-secondary.btn-lg.fw-semibold.shadow-sm.rounded
    {:type (:type args)
-    :value (or (:value args) "Cancel")}])
+    :value (or (:value args) (i18n/tr :form/cancel))}])
 
 (defn build-primary-anchor-button
   "Creates a primary styled anchor button
@@ -403,24 +372,25 @@
         view (:view args)
         cancel-url (:cancel-url args)]
     (list
-     (when-not (= view true)
-       [:button.btn.btn-primary.btn-lg.fw-semibold.shadow-sm.rounded
-        {:type "submit"
-         :onclick "if(this.form && !this.form.checkValidity()){this.form.reportValidity();return false;}"} ; HTML5 validation
-        "Submit"])
-     [:a.btn.btn-outline-secondary.btn-lg.fw-semibold.shadow-sm.rounded
-      {:type "button"
-       :href cancel-url}
-      "Cancel"])))
+     [:div.form-actions
+      (when-not (= view true)
+        [:button.btn.btn-primary.btn-lg.fw-bold.shadow-sm.rounded
+         {:type "submit"
+          :onclick "if(this.form && !this.form.checkValidity()){this.form.reportValidity();return false;}"} ; HTML5 validation
+         (i18n/tr :form/submit)])
+      [:a.btn.btn-outline-secondary.btn-lg.fw-semibold.shadow-sm.rounded
+       {:type "button"
+        :href cancel-url}
+       (i18n/tr :form/cancel)]])))
 
 (defn form
   "Creates a professional form container with Bootstrap 5 styling and themed colors.
    If title is passed, it is rendered in the header. Handles HTML5 validation.
-   If :bare is true, returns only the <form>...</form> for modal AJAX."
+    If :bare is true, returns only the <form>...</form> for modal AJAX."
   ([href fields buttons] (form href fields buttons nil))
   ([href fields buttons title] (form href fields buttons title nil))
-  ([href fields buttons title opts]
-   (let [bare (:bare opts)]
+   ([href fields buttons title opts]
+    (let [bare (:bare opts)]
      (if bare
        ;; Only the <form> for modal AJAX
        [:form {:method "POST"
@@ -428,39 +398,38 @@
                :action href
                :class "needs-validation"
                :novalidate false}
-         (csrf-field)
-          fields
-          [:div.form-actions
-          (cond
-            (and (sequential? buttons) (not (vector? (first buttons))))
-            (doall buttons)
-            (sequential? buttons)
-            (doall buttons)
-            :else
-            buttons)]]
+        (csrf-field)
+         fields
+         [:div.d-flex.gap-2.justify-content-end.mt-4
+         (cond
+           (and (sequential? buttons) (not (vector? (first buttons))))
+           (doall buttons)
+           (sequential? buttons)
+           (doall buttons)
+           :else
+           buttons)]]
         ;; Full card for standalone page
         (list
          [:div.d-flex.justify-content-center.align-items-center.w-100
           {:style "min-height: 45vh;"}
           [:div.card.shadow-lg.w-100.form-card
            {:style "max-width: min(540px, calc(100vw - 2rem));"}
-           (when title
-             [:div.card-header
-              [:h4.mb-0.fw-bold.text-center title]])
-           [:div.card-body.p-4
-            [:form {:method "POST"
-                    :enctype "multipart/form-data"
-                    :action href
-                    :class "needs-validation"
-                    :novalidate true}
-             (csrf-field)
+          (when title
+            [:div.card-header
+             [:h4.mb-0.fw-bold.text-center title]])
+          [:div.card-body.p-4
+           [:form {:method "POST"
+                   :enctype "multipart/form-data"
+                   :action href
+                   :class "needs-validation"
+                   :novalidate true}
+            (csrf-field)
              fields
              [:div.form-actions
-              (cond
-                (and (sequential? buttons) (not (vector? (first buttons))))
-                (doall buttons)
-                (sequential? buttons)
-                (doall buttons)
-                :else
-                buttons)]]]]])))))
-
+             (cond
+               (and (sequential? buttons) (not (vector? (first buttons))))
+               (doall buttons)
+               (sequential? buttons)
+               (doall buttons)
+               :else
+               buttons)]]]]])))))

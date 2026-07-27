@@ -72,6 +72,8 @@
  :form/upload-image "Subir Imagen"
  :form/add-new "Agregar nuevo"
  :form/field-required "{field} es requerido"
+ :form/submit "Guardar"
+ :form/cancel "Cancelar"
 
  ;; [GENERIC] Validation Messages
  :validation/required "{field} es requerido"
@@ -330,4 +332,19 @@
  :config/reload-hooks "Funciones hook: recargadas"
  :config/reload-cache "Caché de configuración: limpiada"
  :config/reload-failed "Error al Recargar"
- :config/reload-error "{error}"}
+ :config/reload-error "{error}"
+
+ ;; [GENERIC] Framework UI keys
+ :common/print "Imprimir"
+ :grid/page-of "Página {page} de {total-pages} ({total} registros)"
+ :subgrid/search "Filtrar..."
+ :subgrid/clear-filter "Limpiar filtro"
+ :subgrid/has-record "1 registro"
+ :subgrid/no-record "Sin registro"
+ :subgrid/show-all "Mostrar todos"
+ :subgrid/showing-n "Mostrando {n} de {total}"
+ :tabgrid/record-list "Registros"
+ :tabgrid/total-records "registros"
+ :tabgrid/select-record "Seleccione un registro para ver sus detalles."
+ :tabgrid/no-record-selected "Seleccione un registro para ver los detalles."
+ :tabgrid/select-hint "Elija un registro de la lista de la izquierda."}

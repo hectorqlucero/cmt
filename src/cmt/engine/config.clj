@@ -6,8 +6,8 @@
    [clojure.spec.alpha :as s]))
 
 (s/def ::id keyword?)
-(s/def ::label string?)
-(s/def ::type #{:text :email :password :date :datetime :number :decimal :select :radio :checkbox :textarea :file :hidden :computed})
+(s/def ::label (s/or :string string? :keyword keyword?))
+(s/def ::type #{:text :email :password :date :datetime :number :decimal :select :radio :checkbox :textarea :file :pdf :document :hidden :computed})
 (s/def ::required? boolean?)
 (s/def ::placeholder string?)
 (s/def ::validation (s/or :fn fn? :keyword keyword?))
@@ -53,9 +53,16 @@
 (s/def ::foreign-key keyword?)
 (s/def ::href string?)
 (s/def ::icon string?)
+(s/def ::label string?)
+(s/def ::relationship-type #{:one-to-one :one-to-many :many-to-many})
+(s/def ::through-table keyword?)
+(s/def ::related-entity keyword?)
+(s/def ::related-fk keyword?)
 (s/def ::subgrid
   (s/keys :req-un [::entity ::foreign-key]
-          :opt-un [::title ::href ::icon]))
+          :opt-un [::title ::href ::icon ::label
+                   ::relationship-type ::through-table
+                   ::related-entity ::related-fk]))
 
 (s/def ::subgrids (s/coll-of ::subgrid))
 
@@ -181,7 +188,7 @@
       (case (.getProtocol res)
         "file"
         (->> (file-seq (io/file res))
-              (filter #(and (.isFile ^java.io.File %) (.endsWith (.getName ^java.io.File %) ".edn")))
+             (filter #(and (.isFile ^java.io.File %) (.endsWith (.getName ^java.io.File %) ".edn")))
              (map #(.getName ^java.io.File %))
              (map #(-> % (str/replace #"\.edn$" "") keyword))
              sort
@@ -230,6 +237,8 @@
    :checkbox {:type :checkbox :required? false}
    :textarea {:type :textarea :required? false}
    :file {:type :file :required? false}
+   :pdf {:type :pdf :required? false}
+   :document {:type :document :required? false}
    :hidden {:type :hidden}})
 
 (def default-actions
@@ -313,7 +322,7 @@
                   (:hidden-in-form? %)
                   (= (:type %) :computed)
                   (and exclude-fk-id (= (:id %) exclude-fk-id)))
-              (:fields config)))))
+             (:fields config)))))
 
 (defn has-permission?
   "Checks if a user level has permission to access an entity."

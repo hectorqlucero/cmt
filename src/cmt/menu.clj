@@ -138,7 +138,7 @@
 (defn ^:private localize-label
   [request label]
   (if (keyword? label)
-    (i18n/tr request label)
+    (i18n/tr label)
     label))
 
 (defn ^:private localize-menu-item
